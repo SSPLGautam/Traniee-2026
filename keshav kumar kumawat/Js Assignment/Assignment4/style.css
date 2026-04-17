@@ -1,0 +1,182 @@
+body {
+    font-family: Arial;
+    background: #f0ebf8;
+}
+
+.container {
+    width: 700px;
+    margin: auto;
+}
+
+.icon {
+    border: 2px solid white;
+    background-color: white;
+    height: 50px;
+    margin-top: 58px;
+    padding: 8px;
+    border-radius: 6px;
+    justify-content: space-evenly;
+}
+.option-input{
+    border: none;
+    outline: none;
+    width: 90%;
+}
+.options{
+    margin-top: 15px;
+}
+.header {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    border-top: 8px solid #673ab7;
+}
+
+.question-card {
+    margin-bottom: 20px;
+}
+
+.title {
+    width: 100%;
+    font-size: 28px;
+    border: none;
+    outline: none;
+}
+
+.description {
+    width: 100%;
+    margin-top: 10px;
+    border: none;
+    outline: none;
+}
+
+.fa-bold {
+    font-weight: bold;
+}
+
+.fa-copy {
+    padding-top: 18px;
+}
+
+.fa-trash {
+    padding-top: 18px;
+}
+
+.fa-toggle-on {
+    padding-top: 18px;
+}
+
+.option-delete-icon {
+    cursor: pointer;
+    color: black;
+    padding-left: 480px;
+}
+
+.fa-italic {
+    font-style: italic;
+}
+
+.fa-underline {
+    text-decoration: underline;
+}
+
+.fa-text-slash {
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.question {
+    background: white;
+    padding: 15px;
+    margin-top: 15px;
+    border-left: 5px solid #673ab7;
+    border-radius: 8px;
+    position: relative;
+}
+
+.question input[type="text"] {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+}
+
+.options {
+    margin-top: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.option input[type="text"] {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin-left: 10px;
+    width: 80%;
+}
+
+.option-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.option-row label {
+    color: #202124;
+    font-size: 16px;
+}
+
+.option-row input[type="radio"] {
+    accent-color: #673ab7;
+}
+
+.option-row .option-image-icon,
+.option-row .fa-image {
+    color: #5f6368;
+    font-size: 18px;
+}
+
+.controls {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    margin-top: 10px;
+    padding: 8px;
+    border: none;
+    background: #673ab7;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+select {
+    padding: 5px;
+}
+
+.required {
+    display: flex;
+    align-items: center;
+}
+
+#samePage {
+  margin-top: 20px;
+  width: 47%;
+  margin-left: 400px;
+}
+
+#samePage div {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-top: 6px solid #673ab7;
+  
+}

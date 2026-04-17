@@ -1,0 +1,61 @@
+body {
+    font-family: Arial;
+    background: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+form {
+    width: 300px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border:4px solid blue ;
+}
+
+.step {
+    display: none;
+}
+
+input, select {
+    width: 90%;
+    padding: 8px;
+    margin: 10px 0;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    background: #e84393;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.circle-number {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ccc;
+    text-align: center;
+    line-height: 30px;
+}
+
+.circle.active {
+    background: #e84393;
+    color: white;
+}
+
+#success {
+    display: none;
+    color: green;
+    margin-top: 20px;
+    text-align: center;
+}
