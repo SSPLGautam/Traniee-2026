@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Google Form</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div style="display: flex; gap: 8px;">
+            <div class="header">
+                <input type="text" placeholder="Untitled form" class="title">
+                <hr>
+
+                <div style="display: flex; display: none;" id="icon">
+                    <i class="fa-solid fa-bold"></i>
+                    <i class="fa-solid fa-italic"></i>
+                    <i class="fa-solid fa-underline"></i>
+                    <i class="fa-solid fa-text-slash"></i>
+                </div>
+
+                <input type="text" placeholder="Form description" class="description">
+            </div><br>
+
+            <div class="icon">
+                <i class="fa-solid fa-plus" style="border-radius: 50%; border: 2px solid black; cursor: pointer;"></i>
+                <p style="cursor: pointer;" class="icon-T">T</p>
+            </div>
+        </div><br>
+
+        <div style="height: 200px;border: 2px solid white; border-radius: 8px; padding: 8px;  background-color: white; display: none; "
+            class="copy-delete-tag">
+            <div style="display: flex;">
+                <div>
+                    <input type="text" placeholder="Untitled Title" class="title">
+                </div>
+
+                <div style="display: flex; gap: 50px;">
+                    <i class="fa-regular fa-copy copy-tag" style="cursor: pointer;"></i>
+                    <i class="fa-solid fa-trash delete-tag" style="cursor: pointer;"></i>
+                </div>
+
+            </div>
+            <hr>
+
+            <div>
+                <input type="text" placeholder="Form description" class="description">
+            </div>
+            <hr>
+
+        </div>
+        <br><br>
+
+        <div>
+
+        </div>
+
+        <div class="new-question"
+            style="display: none; border-radius: 8px; padding: 12px;height: 87px; background-color: white; border: 2px solid white;">
+
+            <p>Question</p>
+            <input type="radio" name="" id="">
+            <label for="">Option1</label>
+        </div><br>
+
+        <div class="question-card"
+            style="border: 2px solid white; padding: 8px 30px; background-color: white; border-radius: 8px; display: none;">
+            <div style="display: flex; justify-content: space-between;">
+                <div class="ques">
+                    <input type="text" placeholder="Question" class="title" style="background-color: none;">
+                    <hr>
+                </div>
+
+                <div style="display: flex; gap: 40px;">
+                    <div style="margin-top: 20px;">
+                        <i class="fa-solid fa-image question-image" style="cursor: pointer;"></i>
+                        <input type="file" class="question-image-picker" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="controlgroup" style="margin-top: 12px;">
+                        <select class="question-type">
+                            <option value="short">Short answer</option>
+                            <option value="para">Paragraph</option>
+                            <option selected value="mul-choice">Multiple Choice</option>
+                            <option value="check"> Checkboxes</option>
+                            <option value="drop">Dropdown</option>
+                            <option value="date">Date</option>
+                        </select>
+                    </div>
+                </div>
+            </div><br>
+            <div class="option-list">
+                <div class="option-row" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="radio" name="" class="option-radio" disabled>
+                    <input type="text" class="option-input" placeholder="Option 1">
+                    <div class="option-image" style="margin-top: 5px; display: flex; gap:5px;">
+                        <i class="fa-solid fa-image option-image-icon" style="cursor:pointer;"></i>
+                        <input type="file" class="option-image-picker" accept="image/*" style="display:none;">
+                        <i class="fa-solid fa-xmark option-delete-icon"
+                            style="cursor:pointer; color:rgb(81, 0, 255);"></i>
+                    </div>
+                </div>
+            </div>
+            <hr><br><br>
+            <div class="add-option-row option-row" style="display: flex; align-items: center; gap: 10px;">
+                <input type="radio" name="" class="other-option-radio" disabled>
+                <label>
+                    <span class="addOptionText" style="cursor:pointer; color:#1a73e8;">Add option</span>
+                </label>
+            </div>
+            <hr>
+            <div class="question-actions" style=" display: flex; margin-left:400px; gap: 20px;">
+                <i class="fa-regular fa-copy copy-question" style="cursor: pointer;"></i>
+                <i class="fa-solid fa-trash delete-question" style="cursor: pointer;"></i>
+                <hr>
+                <p style="margin-bottom: 20px;">Required</p>
+                <input type="checkbox">
+            </div>
+        </div>
+
+        <div id="samePage"></div>
+
+    </div>
+
+    <button style="padding: 10px;width: 100px; font-size: 20px;" id="addform">Add</button>
+    
+    <script src="test.js"></script>
+</body>
+
+</html>

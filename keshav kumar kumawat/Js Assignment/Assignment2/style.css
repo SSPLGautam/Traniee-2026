@@ -1,0 +1,15 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.input-text{
+    display: flex;
+    gap: 20px;
+    width: 25%;
+    margin: 35px 490px;
+}
+.box{
+    margin-left: 275px;
+    width: 62%;
+}
