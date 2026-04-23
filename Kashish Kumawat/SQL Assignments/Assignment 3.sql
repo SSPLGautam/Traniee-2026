@@ -232,7 +232,7 @@ begin
 end;
 
 --48--
-create procedure usp_UpdateProductPrice @ProductID int, @NewPrice money as
+create procedure usp_Upd    ateProductPrice @ProductID int, @NewPrice money as
 begin
     if @NewPrice <= 0
    begin
