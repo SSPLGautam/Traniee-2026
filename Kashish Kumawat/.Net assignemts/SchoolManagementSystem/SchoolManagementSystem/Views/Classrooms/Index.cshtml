@@ -1,0 +1,69 @@
+﻿@model IEnumerable<SchoolManagementSystem.Models.Classroom>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary shadow-sm mb-3">
+        <span class="me-1">➕</span> Add New Record
+    </a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Section)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Remarks)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Section)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Remarks)
+            </td>
+                <td class="text-center">
+                    <div class="d-flex justify-content-center gap-2">
+                        <a asp-action="Edit" asp-route-id="@item.ClassroomId"
+                               class="btn btn-sm btn-warning fw-bold px-3 shadow-sm" style="color: #212529;">
+                            Edit
+                        </a>
+
+                        <a asp-action="Details" asp-route-id="@item.ClassroomId"
+                               class="btn btn-sm btn-info fw-bold px-3 shadow-sm text-white">
+                            Details
+                        </a>
+
+                        <a asp-action="Delete" asp-route-id="@item.ClassroomId"
+                               class="btn btn-sm btn-danger fw-bold px-3 shadow-sm">
+                            Delete
+                        </a>
+                    </div>
+                </td>
+        </tr>
+}
+    </tbody>
+</table>

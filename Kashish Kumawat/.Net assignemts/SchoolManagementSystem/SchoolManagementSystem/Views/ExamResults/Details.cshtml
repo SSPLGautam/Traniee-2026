@@ -1,0 +1,64 @@
+﻿@model SchoolManagementSystem.Models.ExamResult
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Exam Result</h4>
+    <hr />
+
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            Id
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Id
+        </dd>
+
+        <dt class="col-sm-3">
+            Exam Id
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ExamId
+        </dd>
+
+        <dt class="col-sm-3">
+            Student Id
+        </dt>
+        <dd class="col-sm-9">
+            @Model.StudentId
+        </dd>
+
+        <dt class="col-sm-3">
+            Course Id
+        </dt>
+        <dd class="col-sm-9">
+            @Model.CourseId
+        </dd>
+
+        <dt class="col-sm-3">
+            Marks
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Marks
+        </dd>
+
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-warning">
+        Edit
+    </a>
+
+    <a asp-action="Index"
+           class="btn btn-secondary">
+        Back to List
+    </a>
+</div>

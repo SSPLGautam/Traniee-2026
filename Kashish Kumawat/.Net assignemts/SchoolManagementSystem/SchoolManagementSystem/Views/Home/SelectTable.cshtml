@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Select Table";
+}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 mb-5 bg-dark text-white text-center rounded-3">
+                <div class="card-body py-3">
+                    <h5 class="m-0 fw-light">Select the category to insert data</h5>
+                </div>
+            </div>
+
+            <div class="d-grid gap-3">
+                <a asp-controller="Parents" asp-action="Create" class="btn btn-white shadow-sm py-3 fw-bold text-secondary border-0 rounded-3 text-start ps-4 transition-hover">
+                    <span class="text-primary me-2">➕</span> Add New Parent
+                </a>
+
+                <a asp-controller="Students" asp-action="Create" class="btn btn-white shadow-sm py-3 fw-bold text-secondary border-0 rounded-3 text-start ps-4 transition-hover">
+                    <span class="text-success me-2">➕</span> Add New Student
+                </a>
+
+                <a asp-controller="Classrooms" asp-action="Create" class="btn btn-white shadow-sm py-3 fw-bold text-secondary border-0 rounded-3 text-start ps-4 transition-hover">
+                    <span class="text-info me-2">➕</span> Add New Classroom
+                </a>
+
+                <a asp-controller="Teachers" asp-action="Create" class="btn btn-white shadow-sm py-3 fw-bold text-secondary border-0 rounded-3 text-start ps-4 transition-hover">
+                    <span class="text-info me-2" style="color: #17a2b8 !important;">➕</span> Add New Teacher
+                </a>
+
+                <a asp-controller="Attendances" asp-action="Create" class="btn btn-white shadow-sm py-3 fw-bold text-secondary border-0 rounded-3 text-start ps-4 transition-hover">
+                    <span class="text-primary me-2">➕</span> Add New Attendance
+                </a>
+
+                <a asp-controller="Exams" asp-action="Create" class="btn btn-white shadow-sm py-3 fw-bold text-secondary border-0 rounded-3 text-start ps-4 transition-hover">
+                    <span class="text-warning me-2">➕</span> Add New Exam
+                </a>
+
+                <a asp-controller="ExamResults" asp-action="Create" class="btn btn-white shadow-sm py-3 fw-bold text-secondary border-0 rounded-3 text-start ps-4 transition-hover">
+                    <span class="text-danger me-2">➕</span> Add New Exam Result
+                </a>
+            </div>
+
+            <div class="text-center mt-5">
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted small">
+                    ← Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-white { 
+        background-color: #ffffff; 
+        transition: all 0.3s ease; 
+    }
+    
+</style>

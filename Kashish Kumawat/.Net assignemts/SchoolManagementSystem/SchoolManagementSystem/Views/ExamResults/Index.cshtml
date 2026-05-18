@@ -1,0 +1,62 @@
+﻿@model IEnumerable<SchoolManagementSystem.Models.ExamResult>
+
+@{
+    ViewData["Title"] = "Exam Results";
+}
+
+<h1>Exam Results</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary shadow-sm mb-3">
+        <span class="me-1">➕</span> Add New Record
+    </a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Marks</th>
+            <th>Course ID</th>
+            <th>Exam ID</th>
+            <th>Student ID</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Marks</td>
+                <td>@item.CourseId</td>
+                <td>@item.ExamId</td>
+                <td>@item.StudentId</td>
+
+                <td class="text-center">
+                    <div class="d-flex justify-content-center gap-2">
+                        <a asp-action="Edit"
+                               asp-route-studentId="@item.StudentId"
+                               asp-route-examId="@item.ExamId"
+                               class="btn btn-sm btn-warning fw-bold px-3 shadow-sm">
+                            Edit
+                        </a>
+
+                        <a asp-action="Details"
+                               asp-route-studentId="@item.StudentId"
+                               asp-route-examId="@item.ExamId"
+                               class="btn btn-sm btn-info fw-bold px-3 shadow-sm text-white">
+                            Details
+                        </a>
+
+                        <a asp-action="Delete"
+                               asp-route-studentId="@item.StudentId"
+                               asp-route-examId="@item.ExamId"
+                               class="btn btn-sm btn-danger fw-bold px-3 shadow-sm">
+                            Delete
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
