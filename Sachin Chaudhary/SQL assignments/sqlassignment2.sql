@@ -245,8 +245,6 @@ JOIN Categories c ON p.CategoryID = c.CategoryID;
 
 --q41
 
-
-
 DROP VIEW IF EXISTS CustomerInfo;
 
 --q42
