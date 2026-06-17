@@ -81,7 +81,15 @@ namespace TaskManagementSystemMVC.Helper
         {
             var client = CreateClient();
             var response = await client.DeleteAsync(endpoint);
-            return response.IsSuccessStatusCode;
+            //return response.IsSuccessStatusCode;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception(error); 
+            }
+
+            return true;
         }
 
         private static StringContent BuildContent(object data)

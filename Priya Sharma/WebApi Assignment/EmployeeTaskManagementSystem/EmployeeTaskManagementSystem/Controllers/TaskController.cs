@@ -26,7 +26,14 @@ namespace TaskManagementSystemApi.Controllers
 
         private string? GetCurrentUserRole()
         {
-            return User.FindFirstValue(ClaimTypes.Role)!;
+            //return User.FindFirstValue(ClaimTypes.Role)!;
+            if (User.IsInRole("Admin"))
+                return "Admin";
+
+            if (User.IsInRole("Manager"))
+                return "Manager";
+
+            return "Employee";
         }
 
         [HttpGet]
@@ -106,7 +113,7 @@ namespace TaskManagementSystemApi.Controllers
         }
 
         [HttpPut("{id}/status")]
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee")]
         public async Task<IActionResult> UpdateTaskStatus(int id, [FromBody] string status)
         {
             await _taskService.UpdateTaskStatusAsync(id, status);

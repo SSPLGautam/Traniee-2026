@@ -2,24 +2,30 @@
 using TaskManagementSystemApi.Data;
 using TaskManagementSystemApi.DTOs;
 using TaskManagementSystemApi.Models;
+using TaskManagementSystemApi.Repositories.unitOfWork;
 
 namespace TaskManagementSystemApi.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public TaskService(ApplicationDbContext context)
+        //public TaskService(ApplicationDbContext context)
+        //{
+        //    _context = context;
+        //}
+        public TaskService(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
-
         public async Task<List<TaskDto>> GetAllTasksAsync()
         {
-            return await _context.Tasks
-                .Include(t => t.AssignedTo)
-                .Include(t => t.AssignedBy)
-                .Select(t => new TaskDto
+            var tasks = await _uow.Tasks.GetAllWithUsersAsync();
+            //return await _uow.Tasks
+            //    .Include(t => t.AssignedTo)
+            //    .Include(t => t.AssignedBy)
+            return tasks.Select(t => new TaskDto
                 {
                     Id = t.Id,
                     Title = t.Title,
@@ -37,15 +43,17 @@ namespace TaskManagementSystemApi.Services
                                        ? t.AssignedBy.FirstName + " " + t.AssignedBy.LastName
                                        : null
                 })
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<TaskDto?> GetTaskByIdAsync(int id)
         {
-            var task = await _context.Tasks
-                .Include(t => t.AssignedTo)
-                .Include(t => t.AssignedBy)
-                .FirstOrDefaultAsync(t => t.Id == id);
+            //var task = await _uow.Tasks
+            //    .Include(t => t.AssignedTo)
+            //    .Include(t => t.AssignedBy)
+            //    .FirstOrDefaultAsync(t => t.Id == id);
+
+            var task = await _uow.Tasks.GetByIdWithUsersAsync(id);
 
             if (task == null)
                 return null;
@@ -72,11 +80,14 @@ namespace TaskManagementSystemApi.Services
 
         public async Task<List<TaskDto>> GetMyTasksAsync(string userId)
         {
-            return await _context.Tasks
-                .Include(t => t.AssignedTo)
-                .Include(t => t.AssignedBy)
-                .Where(t => t.AssignedToUserId == userId)
-                .Select(t => new TaskDto
+            var tasks = await _uow.Tasks.GetTasksByAssignedToAsync(userId);
+
+            //return await _uow.Tasks
+            //    .Include(t => t.AssignedTo)
+            //    .Include(t => t.AssignedBy)
+            //    .Where(t => t.AssignedToUserId == userId)
+
+            return tasks.Select(t => new TaskDto
                 {
                     Id = t.Id,
                     Title = t.Title,
@@ -94,7 +105,7 @@ namespace TaskManagementSystemApi.Services
                                        ? t.AssignedBy.FirstName + " " + t.AssignedBy.LastName
                                        : null
                 })
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task CreateTaskAsync(CreateTaskDto dto, string assignedByUserId)
@@ -111,14 +122,14 @@ namespace TaskManagementSystemApi.Services
                 UpdatedDate = DateTime.UtcNow
             };
 
-            await _context.Tasks.AddAsync(task);
-            await _context.SaveChangesAsync();
+            await _uow.Tasks.AddAsync(task);
+            await _uow.SaveChangesAsync();
         }
 
         public async Task UpdateTaskAsync(
             int taskid, UpdateTaskDto dto, string userId, string userRole)
         {
-            var task = await _context.Tasks.FindAsync(taskid);
+            var task = await _uow.Tasks.GetByIdAsync(taskid);
 
             if (task == null)
                 throw new KeyNotFoundException($"Task {taskid} not found");
@@ -132,7 +143,8 @@ namespace TaskManagementSystemApi.Services
                 task.Status = dto.Status;
                 task.UpdatedDate = DateTime.UtcNow;
 
-                await _context.SaveChangesAsync();
+                _uow.Tasks.Update(task);
+                await _uow.SaveChangesAsync();
                 return;
             }
 
@@ -143,12 +155,13 @@ namespace TaskManagementSystemApi.Services
             task.DueDate = dto.DueDate;
             task.UpdatedDate = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            _uow.Tasks.Update(task);
+            await _uow.SaveChangesAsync();
         }
 
         public async Task UpdateTaskStatusAsync(int id, string status)
         {
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _uow.Tasks.GetByIdAsync(id);
 
             if (task == null)
                 throw new KeyNotFoundException("Task not found");
@@ -162,18 +175,19 @@ namespace TaskManagementSystemApi.Services
                 throw new Exception("Invalid status value.");
             }
 
-            await _context.SaveChangesAsync();
+            _uow.Tasks.Update(task);
+            await _uow.SaveChangesAsync();
         }
 
         public async Task DeleteTaskAsync(int id)
         {
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _uow.Tasks.GetByIdAsync(id);
 
             if (task == null)
                 throw new KeyNotFoundException($"Task {id} not found");
 
-            _context.Tasks.Remove(task);
-            await _context.SaveChangesAsync();
+            _uow.Tasks.Delete(task);
+            await _uow.SaveChangesAsync();
         }
     }
 }

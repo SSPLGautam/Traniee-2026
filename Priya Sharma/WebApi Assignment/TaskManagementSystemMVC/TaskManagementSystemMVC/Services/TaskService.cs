@@ -49,14 +49,21 @@ namespace TaskManagementSystemMVC.Services
 
         public async Task<bool> UpdateTaskAsync(int id, EditTaskViewModel model)
         {
-            return await _apiService.PutAsync($"api/Task/{id}", new
+            try
             {
-                title = model.Title,
-                description = model.Description,
-                assignedToUserId = model.AssignedToUserId,
-                status = model.Status,
-                dueDate = model.DueDate
-            });
+                return await _apiService.PutAsync($"api/Task/{id}", new
+                {
+                    title = model.Title,
+                    description = model.Description,
+                    assignedToUserId = model.AssignedToUserId,
+                    status = model.Status,
+                    dueDate = model.DueDate
+                });
+            }catch(Exception ex)
+            {
+                Console.WriteLine("Update Task Error: " + ex.Message);
+                return false;
+            }
         }
 
         public async Task UpdateTaskStatusAsync(int id, string status)

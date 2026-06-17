@@ -9,6 +9,7 @@ using TaskManagementSystemApi.Data;
 using TaskManagementSystemApi.Filters;
 using TaskManagementSystemApi.Helper;
 using TaskManagementSystemApi.Models;
+using TaskManagementSystemApi.Repositories.unitOfWork;
 using TaskManagementSystemApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -72,6 +73,8 @@ builder.Services.AddScoped<IRefreshTokenService,RefreshTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+// Add Unit_Of_Work
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 //Validation Services
 builder.Services.AddScoped<ValidationFilter>();
@@ -118,7 +121,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowMVC", policy =>
     {
-        policy.WithOrigins("https://localhost:7132") // your MVC port
+        policy.WithOrigins("https://localhost:7132") 
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();

@@ -19,7 +19,7 @@ namespace TaskManagementSystemApi.Filters
             context.Result = new ObjectResult(new
             {
                 message = "Something went wrong",
-                error = context.Exception.Message
+                error = context.Exception.Message,
             })
             {
                 StatusCode = 500

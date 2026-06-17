@@ -2,18 +2,24 @@
 using System.Security.Cryptography;
 using TaskManagementSystemApi.Data;
 using TaskManagementSystemApi.Models;
+using TaskManagementSystemApi.Repositories.unitOfWork;
 
 namespace TaskManagementSystemApi.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
 
-        public RefreshTokenService(ApplicationDbContext context)
+        //public RefreshTokenService(ApplicationDbContext context)
+        //{
+        //    _context = context;
+        //}
+
+        private readonly IUnitOfWork _uow;
+        public RefreshTokenService(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
-
         public async Task<RefreshToken> CreateRefreshTokenAsync(string userId)
         {
             var refreshToken = new RefreshToken
@@ -25,16 +31,16 @@ namespace TaskManagementSystemApi.Services
                     IsActive = true
                 };
 
-            await _context.RefreshTokens.AddAsync(refreshToken);
+            await _uow.RefreshTokens.AddAsync(refreshToken);
 
-            await _context.SaveChangesAsync();
+            await _uow.SaveChangesAsync();
 
             return refreshToken;
         }
 
         public async Task<RefreshToken?> GetRefreshTokenAsync(string token)
         {
-            return await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token && x.IsActive && x.ExpiresAt > DateTime.UtcNow);
+            return await _uow.RefreshTokens.GetByTokenAsync(token);
         }
 
         public async Task RevokeRefreshTokenAsync(string token)
@@ -48,13 +54,13 @@ namespace TaskManagementSystemApi.Services
             //refreshToken.RevokedAt = DateTime.UtcNow;
 
             //await _context.SaveChangesAsync();
-            var existing = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == token);
+            var existing = await _uow.RefreshTokens.GetByTokenAsync(token);
 
             if (existing == null)
                 return;
 
-            _context.RefreshTokens.Remove(existing);
-            await _context.SaveChangesAsync();
+            _uow.RefreshTokens.Delete(existing);
+            await _uow.SaveChangesAsync();
         }
         
 

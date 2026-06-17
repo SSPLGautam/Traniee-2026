@@ -50,6 +50,34 @@ namespace TaskManagementSystemApi.Data
                         "Admin");
                 }
             }
+
+            var managerEmail = "manager@manager.com";
+
+            var managerUser = await userManager.FindByEmailAsync(managerEmail);
+
+            if (managerUser == null)
+            {
+                managerUser = new ApplicationUser
+                {
+                    UserName = managerEmail,
+                    Email = managerEmail,
+                    FirstName = "Default",
+                    LastName = "Manager",
+                    EmailConfirmed = true
+                };
+
+                var result =
+                    await userManager.CreateAsync(
+                        managerUser,
+                        "Manager@123");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(
+                        managerUser,
+                        "Manager");
+                }
+            }
         }
     }
 }
