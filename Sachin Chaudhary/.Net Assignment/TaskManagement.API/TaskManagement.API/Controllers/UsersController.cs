@@ -27,12 +27,21 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
-        var user = await _userService.GetUserByIdAsync(id);
+        var user = await _userManager.FindByIdAsync(id);
 
         if (user == null)
             return NotFound();
 
-        return Ok(user);
+        var roles = await _userManager.GetRolesAsync(user);
+
+        return Ok(new
+        {
+            id = user.Id,
+            firstName = user.FirstName,
+            lastName = user.LastName,
+            email = user.Email,
+            roles = roles.ToList()
+        });
     }
 
     [HttpPut("{id}/role")]

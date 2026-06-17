@@ -24,13 +24,23 @@ namespace TaskManagement.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var response = await _apiService.GetAsync("api/tasks");
+            HttpResponseMessage response;
+
+            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                response = await _apiService.GetAsync("api/tasks");
+            }
+            else
+            {
+                response = await _apiService.GetAsync("api/tasks/mytasks");
+            }
 
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var tasks = JsonConvert.DeserializeObject<List<TaskViewModel>>(content) ?? new List<TaskViewModel>();
 
+        
                 var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                                     ?? User.FindFirst("uid")?.Value;
 
@@ -42,14 +52,13 @@ namespace TaskManagement.MVC.Controllers
                     PendingTasks = tasks.Count(t => t.Status == "Pending" || t.Status != "Completed"),
                     MyTasksCount = tasks.Count(t => t.AssignedToUserId == currentUserId),
 
-               
+
                     RecentTasks = tasks.AsEnumerable().Reverse().Take(5).ToList()
                 };
 
                 return View(viewModel);
             }
 
-     
             var emptyViewModel = new DashboardViewModel
             {
                 RecentTasks = new List<TaskViewModel>()

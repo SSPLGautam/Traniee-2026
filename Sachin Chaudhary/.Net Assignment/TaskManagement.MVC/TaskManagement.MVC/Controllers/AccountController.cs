@@ -27,13 +27,74 @@ namespace TaskManagement.MVC.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
-           
+
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
             return View();
         }
+
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Login(LoginViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return View(model);
+
+        //    var result = await _authService.Login(model);
+
+        //    if (result == null)
+        //    {
+        //        ModelState.AddModelError("", "Invalid Email or Password");
+        //        return View(model);
+        //    }
+
+        //    await _tokenService.SetTokens(result.AccessToken, result.RefreshToken);
+
+        //    var claims = new List<Claim>
+        //    {
+        //        new Claim(ClaimTypes.NameIdentifier, result.Email ?? model.Email),
+        //        new Claim(ClaimTypes.Email, result.Email ?? model.Email),
+
+        //    };
+        //    if (result.Roles != null && result.Roles.Any())
+        //    {
+        //        foreach (var role in result.Roles)
+        //        {
+        //            claims.Add(new Claim(ClaimTypes.Role, role));
+        //        }
+        //    }
+        //    else if (!string.IsNullOrEmpty(result.Role))
+        //    {
+        //        claims.Add(new Claim(ClaimTypes.Role, result.Role));
+        //    }
+
+        //    var identity = new ClaimsIdentity(
+        //        claims,
+        //        CookieAuthenticationDefaults.AuthenticationScheme,
+        //        ClaimTypes.Name,
+        //        ClaimTypes.Role
+        //    );
+
+        //    var principal = new ClaimsPrincipal(identity);
+
+        //    var authProperties = new AuthenticationProperties
+        //    {
+        //        IsPersistent = true,
+        //        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) 
+        //    };
+
+
+        //    await HttpContext.SignInAsync(
+        //        CookieAuthenticationDefaults.AuthenticationScheme,
+        //        principal,
+        //        authProperties
+        //    );
+
+        //    return RedirectToAction("Index", "Dashboard");
+        //}
 
         [HttpPost]
         [AllowAnonymous]
@@ -51,18 +112,35 @@ namespace TaskManagement.MVC.Controllers
                 return View(model);
             }
 
-           
             await _tokenService.SetTokens(result.AccessToken, result.RefreshToken);
 
-          
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, result.Email ?? model.Email),
-                new Claim(ClaimTypes.Email, result.Email ?? model.Email),
-                new Claim(ClaimTypes.Role, result.Role ?? "Employee")
-            };
+            Console.WriteLine("LOGIN ROLE = " + result.Role);
 
-           
+            if (result.Roles != null)
+            {
+                Console.WriteLine("LOGIN ROLES = " + string.Join(",", result.Roles));
+            }
+
+            var claims = new List<Claim>
+{
+       new Claim(ClaimTypes.NameIdentifier, result.UserId ?? result.Email ?? model.Email),
+    new Claim(ClaimTypes.Name, result.UserName ?? result.Email ?? model.Email),
+    new Claim(ClaimTypes.Email, result.Email ?? model.Email)
+};
+
+            if (result.Roles != null && result.Roles.Any())
+            {
+                foreach (var role in result.Roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(result.Role))
+            {
+                claims.Add(new Claim(ClaimTypes.Role, result.Role));
+            }
+
             var identity = new ClaimsIdentity(
                 claims,
                 CookieAuthenticationDefaults.AuthenticationScheme,
@@ -78,7 +156,6 @@ namespace TaskManagement.MVC.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
             };
 
-          
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal,
@@ -87,6 +164,7 @@ namespace TaskManagement.MVC.Controllers
 
             return RedirectToAction("Index", "Dashboard");
         }
+
 
         [HttpGet]
         [AllowAnonymous]
@@ -112,9 +190,10 @@ namespace TaskManagement.MVC.Controllers
             if (result)
                 return RedirectToAction("Login");
 
-            ModelState.AddModelError("", "Registration failed. This email is already registered or the password does not meet complexity requirements.");
+            ModelState.AddModelError("", "Registration Failed. Email might already exist.");
             return View(model);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -127,8 +206,6 @@ namespace TaskManagement.MVC.Controllers
         public async Task<IActionResult> AccessDenied()
         {
             return View();
-
-          
         }
     }
 }

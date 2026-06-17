@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.Models;
@@ -11,6 +12,7 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace SchoolManagement.Controllers
 {
+    [Authorize]
     public class ClassroomsController : Controller
     {
         private readonly SchooErpContext _context;

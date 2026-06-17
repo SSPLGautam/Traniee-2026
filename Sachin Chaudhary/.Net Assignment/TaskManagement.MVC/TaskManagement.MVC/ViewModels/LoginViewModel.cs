@@ -1,10 +1,13 @@
-﻿namespace TaskManagement.MVC.ViewModels
+﻿using System.Security.Claims;
+
+namespace TaskManagement.MVC.ViewModels
 {
     public class LoginViewModel
     {
         public string Email { get; set; } = "";
 
         public string Password { get; set; } = "";
+       
     }
 
 }

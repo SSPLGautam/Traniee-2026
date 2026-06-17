@@ -28,7 +28,6 @@ namespace TaskManagement.MVC.Services
             return new List<TaskViewModel>();
         }
 
-     
         public async Task<TaskViewModel?> GetTaskById(int id)
         {
             var response = await _apiService.GetAsync($"api/tasks/{id}");
@@ -39,7 +38,6 @@ namespace TaskManagement.MVC.Services
             }
             return null;
         }
-
 
         public async Task<bool> CreateTask(TaskViewModel task)
         {

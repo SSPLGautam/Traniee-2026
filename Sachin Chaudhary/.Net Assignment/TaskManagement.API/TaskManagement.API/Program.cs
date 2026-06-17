@@ -8,8 +8,12 @@ using System.Text;
 using TaskManagement.API.Data;
 using TaskManagement.API.Filters;
 using TaskManagement.API.Models;
+using TaskManagement.API.Repositories;
+using TaskManagement.API.Repositories.GenericRepository;
+using TaskManagement.API.Repositories.UnitOfWork.UnitOfWork;
 using TaskManagement.API.Services;
 using TaskManagement.API.Services.Interfaces;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,11 +30,15 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<
-    ITaskService,
-    TaskService>();
-builder.Services.AddScoped<IRefreshTokenService,
-    RefreshTokenService>();
+builder.Services.AddScoped<ITaskService,TaskService>();
+builder.Services.AddScoped<IRefreshTokenService,RefreshTokenService>();
+
+
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
 
 builder.Services.AddScoped<ValidationFilter>();
 builder.Services.AddScoped<LoggingFilter>();
@@ -89,12 +97,13 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<LoggingFilter>();
     options.Filters.Add<GlobalExceptionFilter>();
 });
-
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();   
+    app.UseSwagger();
     app.UseSwaggerUI();
 }
 

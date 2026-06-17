@@ -17,8 +17,9 @@ namespace TaskManagement.MVC.ViewModels
         [Required(ErrorMessage = "Due target date threshold required.")]
         public DateTime DueDate { get; set; } = DateTime.UtcNow.AddDays(1);
 
-        // ✅ FIXED: Added specific configuration fields to hook user/employee allocations
+      
         [Required(ErrorMessage = "An assignee worker ID must be specified.")]
         public string AssignedToUserId { get; set; } = string.Empty;
+        public List<UserManagementViewModel> Users { get; internal set; }
     }
 }

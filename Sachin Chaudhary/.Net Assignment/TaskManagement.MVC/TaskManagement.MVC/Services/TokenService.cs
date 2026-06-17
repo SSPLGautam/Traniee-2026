@@ -25,7 +25,7 @@ namespace TaskManagement.MVC.Services
                 var cookieOptions = new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = false,
+                    Secure = false, 
                     SameSite = SameSiteMode.Lax,
                     Expires = DateTimeOffset.UtcNow.AddHours(12)
                 };

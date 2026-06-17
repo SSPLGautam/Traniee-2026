@@ -36,7 +36,7 @@ namespace TaskManagement.MVC.Handlers
 
             var response = await base.SendAsync(request, cancellationToken);
 
-         
+     
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 var refreshToken = await _tokenService.GetRefreshToken();
@@ -48,7 +48,6 @@ namespace TaskManagement.MVC.Handlers
 
                 using var client = new HttpClient();
 
-        
                 var baseUrl = (_configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5072").Trim();
 
                 if (baseUrl.EndsWith("/"))
@@ -62,7 +61,6 @@ namespace TaskManagement.MVC.Handlers
                 var json = JsonConvert.SerializeObject(refreshRequest);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-
                 var refreshResponse = await client.PostAsync(refreshUrl, content, cancellationToken);
 
                 if (refreshResponse.IsSuccessStatusCode)
@@ -74,12 +72,10 @@ namespace TaskManagement.MVC.Handlers
                     {
                         await _tokenService.SetTokens(tokens.AccessToken, tokens.RefreshToken);
 
-              
                         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
                         return await base.SendAsync(request, cancellationToken);
                     }
                 }
-
 
                 await _tokenService.ClearTokens();
             }

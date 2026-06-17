@@ -5,10 +5,9 @@ namespace TaskManagement.MVC.ViewModels
     public class RegisterViewModel
     {
   
-        [Required(ErrorMessage = "Full Name is required.")]
+        [Required(ErrorMessage = "first Name is required.")]
         [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
-        public string  FirstName { get; set; } = string.Empty;
-
+        public string FirstName { get; set; } = string.Empty;
         [Required(ErrorMessage = "Last Name is required.")]
         [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters.")]
         public string LastName { get; set; } = string.Empty;

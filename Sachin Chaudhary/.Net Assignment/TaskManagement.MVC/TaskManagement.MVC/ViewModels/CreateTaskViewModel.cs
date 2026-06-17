@@ -14,8 +14,8 @@ namespace TaskManagement.MVC.ViewModels
         [JsonProperty("dueDate")]
         public DateTime? DueDate { get; set; }
 
-
+  
         [JsonProperty("assignedToUserId")]
-        public string AssignedTo { get; set; }
+        public string AssignedToUserId { get; set; }
     }
 }

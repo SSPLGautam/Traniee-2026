@@ -1,53 +1,72 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using TaskManagement.API.DTOs;
+﻿using TaskManagement.API.DTOs;
 using TaskManagement.API.Models;
+using TaskManagement.API.Repositories.UnitOfWork.UnitOfWork;
 using TaskManagement.API.Services.Interfaces;
 
 namespace TaskManagement.API.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TaskService(ApplicationDbContext context)
+        public TaskService(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<TaskResponseDto>> GetAllAsync()
         {
-            return await _context.Tasks
-                .Select(x => new TaskResponseDto
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Description = x.Description,
-                    AssignedToUserId = x.AssignedToUserId,
-                    AssignedByUserId = x.AssignedByUserId,
-                    Status = x.Status,
-                    DueDate = x.DueDate,
-                    CreatedDate = x.CreatedDate
-                })
-                .ToListAsync();
+            var tasks = await _unitOfWork.Tasks.GetAllAsync();
+
+            return tasks.Select(x => new TaskResponseDto
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                AssignedToUserId = x.AssignedToUserId,
+                AssignedByUserId = x.AssignedByUserId,
+                Status = x.Status,
+                DueDate = x.DueDate,
+                CreatedDate = x.CreatedDate
+            }).ToList();
         }
 
-        public async Task<TaskResponseDto> GetByIdAsync(int id)
+        public async Task<List<TaskResponseDto>> GetMyTasksAsync(string userId)
         {
-            return await _context.Tasks
-                .Where(x => x.Id == id)
-                .Select(x => new TaskResponseDto
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Description = x.Description,
-                    AssignedToUserId = x.AssignedToUserId,
-                    AssignedByUserId = x.AssignedByUserId,
-                    Status = x.Status,
-                    DueDate = x.DueDate,
-                    CreatedDate = x.CreatedDate
-                })
-                .FirstOrDefaultAsync();
+            var tasks = await _unitOfWork.Tasks.FindAsync1(x =>
+                x.AssignedToUserId == userId);
+
+            return tasks.Select(x => new TaskResponseDto
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                AssignedToUserId = x.AssignedToUserId,
+                AssignedByUserId = x.AssignedByUserId,
+                Status = x.Status,
+                DueDate = x.DueDate,
+                CreatedDate = x.CreatedDate
+            }).ToList();
+        }
+
+        public async Task<TaskResponseDto?> GetByIdAsync(int id)
+        {
+            var task = await _unitOfWork.Tasks.GetByIdAsync(id);
+
+            if (task == null)
+                return null;
+
+            return new TaskResponseDto
+            {
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                AssignedToUserId = task.AssignedToUserId,
+                AssignedByUserId = task.AssignedByUserId,
+                Status = task.Status,
+                DueDate = task.DueDate,
+                CreatedDate = task.CreatedDate
+            };
         }
 
         public async Task<TaskResponseDto> CreateAsync(
@@ -65,9 +84,8 @@ namespace TaskManagement.API.Services
                 CreatedDate = DateTime.UtcNow
             };
 
-            _context.Tasks.Add(task);
-
-            await _context.SaveChangesAsync();
+            await _unitOfWork.Tasks.AddAsync(task);
+            await _unitOfWork.SaveChangesAsync();
 
             return new TaskResponseDto
             {
@@ -86,9 +104,7 @@ namespace TaskManagement.API.Services
             int id,
             UpdateTaskDto dto)
         {
-            var task =
-                await _context.Tasks
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var task = await _unitOfWork.Tasks.GetByIdAsync(id);
 
             if (task == null)
                 return false;
@@ -99,23 +115,21 @@ namespace TaskManagement.API.Services
             task.DueDate = dto.DueDate;
             task.UpdatedDate = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            _unitOfWork.Tasks.Update(task);
+            await _unitOfWork.SaveChangesAsync();
 
             return true;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var task =
-                await _context.Tasks
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var task = await _unitOfWork.Tasks.GetByIdAsync(id);
 
             if (task == null)
                 return false;
 
-            _context.Tasks.Remove(task);
-
-            await _context.SaveChangesAsync();
+            _unitOfWork.Tasks.Delete(task);
+            await _unitOfWork.SaveChangesAsync();
 
             return true;
         }

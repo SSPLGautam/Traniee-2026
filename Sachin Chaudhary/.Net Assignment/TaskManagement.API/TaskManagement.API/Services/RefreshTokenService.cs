@@ -1,17 +1,23 @@
 ﻿using System.Security.Cryptography;
 
 using TaskManagement.API.Models;
+using TaskManagement.API.Repositories.UnitOfWork.UnitOfWork;
 using TaskManagement.API.Services.Interfaces;
 
 public class RefreshTokenService : IRefreshTokenService
 {
-    private readonly ApplicationDbContext _context;
+    //private readonly ApplicationDbContext _context;
 
-    public RefreshTokenService(ApplicationDbContext context)
+    //public RefreshTokenService(ApplicationDbContext context)
+    //{
+    //    _context = context;
+    //}
+    private readonly IUnitOfWork _unitOfWork;
+
+    public RefreshTokenService(IUnitOfWork unitOfWork)  
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
-
     public string GenerateRefreshToken()
     {
         var randomBytes = new byte[64];
@@ -36,9 +42,9 @@ public class RefreshTokenService : IRefreshTokenService
             IsActive = true
         };
 
-        _context.RefreshTokens.Add(refreshToken);
+        await _unitOfWork.RefreshTokens.AddAsync(refreshToken);
 
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         return refreshToken;
     }

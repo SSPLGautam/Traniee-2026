@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using TaskManagement.MVC.Interfaces;
 using TaskManagement.MVC.ViewModels;
 
 namespace TaskManagement.MVC.Controllers
 {
-    [Authorize(Roles ="Admin") ]
+    [Authorize] 
     public class UsersController : Controller
     {
         private readonly IApiService _apiService;
@@ -17,30 +20,57 @@ namespace TaskManagement.MVC.Controllers
             _apiService = apiService;
         }
 
+      
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var response = await _apiService.GetAsync("api/users");
-
             var users = new List<UserManagementViewModel>();
 
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-
-                users = JsonConvert.DeserializeObject<List<UserManagementViewModel>>(content)
-                        ?? new List<UserManagementViewModel>();
+                users = JsonConvert.DeserializeObject<List<UserManagementViewModel>>(content) ?? new List<UserManagementViewModel>();
             }
 
             return View(users);
         }
 
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> ManageRoles(string userId)
+        //{
+        //    var userResponse = await _apiService.GetAsync($"api/users/{userId}");
+
+        //    if (!userResponse.IsSuccessStatusCode)
+        //        return RedirectToAction("Index");
+
+        //    var userContent = await userResponse.Content.ReadAsStringAsync();
+
+        //    var userDetails =
+        //        JsonConvert.DeserializeObject<UserManagementViewModel>(userContent);
+
+        //    var viewModel = new ManageUserRolesViewModel
+        //    {
+        //        UserId = userId,
+
+        //        CurrentRoles = userDetails?.Roles ?? new List<string>(),
+
+        //        AvailableRoles = new List<string>
+        //{
+        //    "Admin",
+        //    "Manager",
+        //    "Employee"
+        //}
+        //    };
+
+        //    return View(viewModel);
+        //}
+
         [HttpGet]
         public async Task<IActionResult> ManageRoles(string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                return RedirectToAction("Index");
-
             var userResponse = await _apiService.GetAsync($"api/users/{userId}");
 
             if (!userResponse.IsSuccessStatusCode)
@@ -48,31 +78,39 @@ namespace TaskManagement.MVC.Controllers
 
             var userContent = await userResponse.Content.ReadAsStringAsync();
 
-            var user = JsonConvert.DeserializeObject<UserManagementViewModel>(userContent);
+            var userDetails =
+                JsonConvert.DeserializeObject<UserManagementViewModel>(userContent);
 
-            var model = new ManageUserRolesViewModel
+            var viewModel = new ManageUserRolesViewModel
             {
                 UserId = userId,
-                Email = user?.Email,
-                CurrentRoles = user?.Roles ?? new List<string>(),
+                Email = userDetails?.Email ?? "",
+
+                CurrentRoles = userDetails?.Roles ?? new List<string>(),
+
                 AvailableRoles = new List<string>
-                {
-                    "Admin",
-                    "Manager",
-                    "Employee"
-                }
+        {
+            "Admin",
+            "Manager",
+            "Employee"
+        }
             };
 
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateRolesAjax([FromBody] UserRolesUpdateViewModel model)
+        public async Task<IActionResult> AssignRolesAjax([FromBody] UserRolesUpdateViewModel model)
         {
-            var jsonPayload = JsonConvert.SerializeObject(model.Roles);
+            if (model == null || string.IsNullOrEmpty(model.UserId))
+            {
+                return BadRequest(new { message = "Invalid request payload." });
+            }
+
+            var json = JsonConvert.SerializeObject(model.Roles);
 
             var content = new StringContent(
-                jsonPayload,
+                json,
                 Encoding.UTF8,
                 "application/json");
 
@@ -84,7 +122,7 @@ namespace TaskManagement.MVC.Controllers
             {
                 return Ok(new
                 {
-                    message = "Roles updated successfully!"
+                    message = "Roles updated successfully."
                 });
             }
 

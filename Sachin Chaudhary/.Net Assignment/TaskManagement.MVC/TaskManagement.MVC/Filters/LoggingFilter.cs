@@ -23,7 +23,7 @@ namespace TaskManagement.MVC.Filters
             var requestUrl = context.HttpContext.Request.Path + context.HttpContext.Request.QueryString;
             var user = context.HttpContext.User?.Identity?.Name ?? "Anonymous/Unauthenticated User";
 
-          
+   
             var executedContext = await next();
 
             stopwatch.Stop();

@@ -17,15 +17,22 @@ namespace TaskManagement.MVC.Services
         {
             return await _httpClient.GetAsync(url);
         }
-
-        public async Task<HttpResponseMessage> PostAsync(string url, HttpContent content)
+        public async Task<HttpResponseMessage> PostAsync(
+                  string url,
+                  HttpContent content)
         {
-            return await _httpClient.PostAsync(url, content);
+            return await _httpClient.PostAsync(
+                url,
+                content);
         }
 
-        public async Task<HttpResponseMessage> PutAsync(string url, HttpContent content)
+        public async Task<HttpResponseMessage> PutAsync(
+            string url,
+            HttpContent content)
         {
-            return await _httpClient.PutAsync(url, content);
+            return await _httpClient.PutAsync(
+                url,
+                content);
         }
 
         public async Task<HttpResponseMessage> DeleteAsync(string url)

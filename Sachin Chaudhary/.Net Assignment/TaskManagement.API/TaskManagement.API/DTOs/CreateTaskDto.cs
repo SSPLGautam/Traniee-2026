@@ -1,13 +1,12 @@
-﻿namespace TaskManagement.API.DTOs
+﻿public class CreateTaskDto
 {
-    public class CreateTaskDto
-    {
-        public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
-        public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
-        public string AssignedToUserId { get; set; }
+    public string Status { get; set; } = "Pending";
 
-        public DateTime DueDate { get; set; }
-    }
+    public DateTime DueDate { get; set; }
+
+    public string AssignedToUserId { get; set; } = string.Empty;
 }

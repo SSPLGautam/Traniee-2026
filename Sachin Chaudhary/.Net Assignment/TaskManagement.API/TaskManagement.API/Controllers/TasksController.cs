@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TaskManagement.API.DTOs;
+using TaskManagement.API.Repositories.UnitOfWork.UnitOfWork;
 using TaskManagement.API.Services.Interfaces;
 
 namespace TaskManagement.API.Controllers
@@ -12,11 +13,13 @@ namespace TaskManagement.API.Controllers
     public class TasksController : ControllerBase
     {
         private readonly ITaskService _taskService;
+       
 
         public TasksController(
             ITaskService taskService)
         {
             _taskService = taskService;
+           
         }
 
         [HttpGet]
@@ -83,9 +86,7 @@ namespace TaskManagement.API.Controllers
             UpdateTaskDto dto)
         {
             var result =
-                await _taskService.UpdateAsync(
-                    id,
-                    dto);
+             await _taskService.UpdateAsync(id,dto);
 
             if (!result)
                 return NotFound();

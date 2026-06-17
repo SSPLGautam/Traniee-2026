@@ -17,7 +17,6 @@ namespace TaskManagement.MVC.Filters
 
         public void OnException(ExceptionContext context)
         {
-           
             _logger.LogError(context.Exception, "An unhandled runtime error bypass occurred inside the pipeline framework.");
 
             bool isAjaxRequest = context.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest" ||
@@ -25,6 +24,7 @@ namespace TaskManagement.MVC.Filters
 
             if (isAjaxRequest)
             {
+
                 var jsonResponse = new
                 {
                     Success = false,
@@ -39,10 +39,11 @@ namespace TaskManagement.MVC.Filters
             }
             else
             {
-            
+           
                 context.Result = new RedirectToActionResult("Error", "Home", null);
             }
 
+          
             context.ExceptionHandled = true;
         }
     }

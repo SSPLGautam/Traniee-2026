@@ -9,8 +9,7 @@ namespace TaskManagement.API.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserService(
-            UserManager<ApplicationUser> userManager)
+        public UserService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
@@ -32,7 +31,7 @@ namespace TaskManagement.API.Services
                     LastName = user.LastName,
                     Email = user.Email ?? "",
                  
-                    Role = roles != null ? roles.ToList() : new List<string>()
+                    Roles = roles != null ? roles.ToList() : new List<string>()
                 });
             }
 
@@ -54,7 +53,7 @@ namespace TaskManagement.API.Services
                 LastName = user.LastName,
                 Email = user.Email ?? "",
               
-                Role = roles != null ? roles.ToList() : new List<string>()
+                Roles = roles != null ? roles.ToList() : new List<string>()
             };
         }
 

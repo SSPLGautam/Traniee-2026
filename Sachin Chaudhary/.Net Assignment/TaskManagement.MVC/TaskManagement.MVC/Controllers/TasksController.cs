@@ -22,7 +22,7 @@ namespace TaskManagement.MVC.Controllers
             _apiService = apiService;
         }
 
-       
+      
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -39,7 +39,7 @@ namespace TaskManagement.MVC.Controllers
             return View(new List<TaskViewModel>());
         }
 
-
+       
         [HttpGet]
         public async Task<IActionResult> MyTasks()
         {
@@ -61,7 +61,6 @@ namespace TaskManagement.MVC.Controllers
             return View(new List<TaskViewModel>());
         }
 
- 
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -79,33 +78,75 @@ namespace TaskManagement.MVC.Controllers
         }
 
 
+        //[HttpGet]
+        //public IActionResult Create() => View();
         [HttpGet]
-        public IActionResult Create() => View();
-
-
-        [HttpPost]
-        public async Task<IActionResult> CreateAjax([FromBody] TaskViewModel model)
+        public async Task<IActionResult> Create()
         {
-            if (model == null)
-                return BadRequest(new { message = "Payload structure is completely null." });
+            var usersResponse =
+                await _apiService.GetAsync("api/users");
 
-          
-            if (string.IsNullOrEmpty(model.Status)) model.Status = "Pending";
-            if (string.IsNullOrEmpty(model.Description)) model.Description = "";
+            var users = new List<UserManagementViewModel>();
 
-            var json = JsonConvert.SerializeObject(model);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            if (usersResponse.IsSuccessStatusCode)
+            {
+                var json =
+                    await usersResponse.Content.ReadAsStringAsync();
 
-            var response = await _apiService.PostAsync("api/tasks", content);
+                users =
+                    JsonConvert.DeserializeObject<List<UserManagementViewModel>>(json)
+                    ?? new List<UserManagementViewModel>();
+            }
 
-            if (response.IsSuccessStatusCode)
-                return Ok(new { message = "Task created successfully!" });
+            var model = new TaskViewModel
+            {
+                Users = users
+            };
 
-          
-            var apiError = await response.Content.ReadAsStringAsync();
-            return BadRequest(new { message = "Backend API rejection: " + apiError });
+            return View(model);
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> Create([FromBody] TaskViewModel model)
+        //{
+
+        //    if (model == null)
+        //        return BadRequest(new { message = "Payload structure is completely null." });
+
+
+        //    if (string.IsNullOrEmpty(model.Status)) model.Status = "Pending";
+        //    if (string.IsNullOrEmpty(model.Description)) model.Description = "";
+
+        //    var json = JsonConvert.SerializeObject(model);
+        //    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        //    var response = await _apiService.PostAsync("api/tasks", content);
+
+        //    if (response.IsSuccessStatusCode)
+        //        return Ok(new { message = "Task created successfully!" });
+
+
+        //    var apiError = await response.Content.ReadAsStringAsync();
+        //    return BadRequest(new { message = "Backend API rejection: " + apiError });
+        //}
+        [HttpPost]
+        public async Task<IActionResult> Create(TaskViewModel model)
+        {
+            var response =
+                await _apiService.PostAsync(
+                    "api/tasks",
+                    new StringContent(
+                        JsonConvert.SerializeObject(model),
+                        Encoding.UTF8,
+                        "application/json"));
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(model);
+        }
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -122,6 +163,7 @@ namespace TaskManagement.MVC.Controllers
             return RedirectToAction("Index");
         }
 
+       
         [HttpPost]
         public async Task<IActionResult> UpdateAjax(int id, [FromBody] EditTaskViewModel model)
         {
@@ -139,11 +181,11 @@ namespace TaskManagement.MVC.Controllers
             return BadRequest(new { message = "Failed to update task." });
         }
 
- 
+        
         [HttpPost]
         public async Task<IActionResult> DeleteAjax(int id)
         {
-          
+            
             var response = await _apiService.DeleteAsync($"api/tasks/{id}");
 
             if (response.IsSuccessStatusCode)

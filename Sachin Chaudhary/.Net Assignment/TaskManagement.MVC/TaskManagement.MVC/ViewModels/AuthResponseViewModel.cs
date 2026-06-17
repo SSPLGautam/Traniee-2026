@@ -9,11 +9,13 @@ namespace TaskManagement.MVC.ViewModels
         public string AccessToken { get; set; } = string.Empty;
 
         public string RefreshToken { get; set; } = string.Empty;
-    
-
+      
+        public string? Role { get;  set; }
         public string Email { get; set; }
         public int ExpiresIn { get; set; }
-        public string Role { get; set; }
-        public ClaimsIdentity? UserName { get; internal set; }
+        //public string Role { get; set; }
+        public string UserName { get; internal set; }
+        public List<string> Roles { get; set; } = new();
+        public string? UserId { get; internal set; }
     }
 }
