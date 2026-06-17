@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+<hr />
+<style>
+    .dashboard-list li{
+        font-size : 20px;
+    }
+</style>
+<ul class="dashboard-list">
+    @if (User.IsInRole("Admin"))
+    {
+        <li>
+            <a asp-controller="Tasks" asp-action="Index"> View All Tasks </a>
+        </li>
+
+        <li>
+            <a asp-controller="Tasks" asp-action="Create">Create Task</a>
+        </li>
+
+        <li>
+            <a asp-controller="Emp" asp-action="MyTasks">My Tasks</a>
+        </li>
+
+        <li>
+            <a asp-controller="Users" asp-action="Index">Manage Users</a>
+        </li>
+    }
+
+    @if (User.IsInRole("Manager"))
+    {
+        <li>
+            <a asp-controller="Tasks" asp-action="Index"> View All Tasks </a>
+        </li>
+
+        <li>
+            <a asp-controller="Tasks" asp-action="Create">Create Task</a>
+        </li>
+        @* <li>
+            <a asp-controller="Emp" asp-action="MyTasks">My Tasks</a>
+        </li> *@
+    }
+    @if (User.IsInRole("Employee"))
+    {
+        <li>
+            <a asp-controller="Emp" asp-action="MyTasks">My Tasks</a>
+        </li>
+    }
+</ul>
+
+<form asp-controller="Auth"asp-action="LogoutRefreshToken"method="post">
+
+    <button type="submit">Logout</button>
+
+</form>

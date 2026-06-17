@@ -11,11 +11,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 namespace EmpTaskManagementMVC.Controllers
 {
-    public class MvcAuthController : Controller
+    public class AuthController : Controller
     {
         private readonly IMvcAuthService _authService;
         private readonly IMvcUsersService _mvcUsersService;
-        public MvcAuthController(IMvcAuthService authService, IMvcUsersService mvcUsersService)
+        public AuthController(IMvcAuthService authService, IMvcUsersService mvcUsersService)
         {
             _authService = authService;
             _mvcUsersService = mvcUsersService;

@@ -10,11 +10,11 @@ namespace EmpTaskManagementMVC.Controllers
 {
     [Authorize(Roles = "Admin,Manager")]
 
-    public class MvcTasksController : Controller
+    public class TasksController : Controller
     {
         private readonly IMvcTasksService _tasksService;
         private readonly IMvcUsersService _usersService;
-        public MvcTasksController(IMvcTasksService tasksService, IMvcUsersService usersService)
+        public TasksController(IMvcTasksService tasksService, IMvcUsersService usersService)
         {
             _tasksService = tasksService;
             _usersService = usersService;
@@ -44,6 +44,11 @@ namespace EmpTaskManagementMVC.Controllers
                 HttpContext.Session.Clear();
 
                 return RedirectToAction("Login", "MvcAuth");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Index");
             }
         }
             

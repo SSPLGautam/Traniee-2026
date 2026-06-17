@@ -8,10 +8,10 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 namespace EmpTaskManagementMVC.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class MvcUsersController : Controller
+    public class UsersController : Controller
     {
         private readonly IMvcUsersService _usersService;
-        public MvcUsersController(IMvcUsersService usersService)
+        public UsersController(IMvcUsersService usersService)
         {
             _usersService = usersService;
         }

@@ -7,9 +7,9 @@
 
     <h2 style="text-align:center;">Login</h2>
 
-    <form asp-controller="MvcAuth" asp-action="Login" method="post">
+    <form asp-controller="Auth" asp-action="Login" method="post">
 
-        <div asp-validation-summary="ModelOnly" style="color:red;"></div>
+        <div asp-validation-summary="All" style="color:red;"></div>
 
         <label>Email :</label><br />
         <input asp-for="Email" required style="width:100%; padding:8px; margin-bottom:10px;" />
@@ -28,7 +28,7 @@
     </form>
 
     <div style="margin-top:10px; text-align:center;">
-        <a asp-controller="MvcAuth" asp-action="Register"> New User ?</a>
+        <a asp-controller="Auth" asp-action="Register"> New User ?</a>
     </div>
 
     

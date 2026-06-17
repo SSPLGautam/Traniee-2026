@@ -1,8 +1,10 @@
 using EmployeeTaskManagementAPI.Data;
 using EmployeeTaskManagementAPI.Filters;
 using EmployeeTaskManagementAPI.GlobalException;
+using EmployeeTaskManagementAPI.IRepository;
 using EmployeeTaskManagementAPI.IService;
 using EmployeeTaskManagementAPI.Models;
+using EmployeeTaskManagementAPI.Repositories;
 using EmployeeTaskManagementAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -62,6 +64,8 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 

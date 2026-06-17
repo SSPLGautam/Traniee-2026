@@ -5,7 +5,12 @@
 }
 
 <h2>Update Task</h2>
-
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 <form asp-action="Edit" method="post">
     <div asp-validation-summary="All" style="color:red;"></div>
 

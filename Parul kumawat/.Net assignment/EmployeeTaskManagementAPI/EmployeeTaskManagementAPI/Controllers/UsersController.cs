@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeTaskManagementAPI.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
 
     public class UsersController : ControllerBase
@@ -15,6 +14,7 @@ namespace EmployeeTaskManagementAPI.Controllers
         {
             _userService = userService;
         }
+        [Authorize(Roles = "Admin,Manager")]
 
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAllUsers()
@@ -33,6 +33,8 @@ namespace EmployeeTaskManagementAPI.Controllers
                 });
             }
         }
+        [Authorize(Roles = "Admin")]
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -59,6 +61,8 @@ namespace EmployeeTaskManagementAPI.Controllers
             
             
         }
+        [Authorize(Roles = "Admin")]
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(string id)
         {
@@ -76,6 +80,8 @@ namespace EmployeeTaskManagementAPI.Controllers
                 });
             }
         }
+        [Authorize(Roles = "Admin")]
+
         [HttpPut("edit")]
         public async Task<IActionResult> EditUser([FromBody]UpdateUserDto dto)
         {

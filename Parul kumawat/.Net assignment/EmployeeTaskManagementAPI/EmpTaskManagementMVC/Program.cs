@@ -17,7 +17,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/MvcAuth/Login";
+        options.LoginPath = "/Auth/Login";
         options.AccessDeniedPath = "/Home/AccessDenied";
     });
 builder.Services.AddHttpClient<IMvcAuthService, MvcAuthService>(client =>
@@ -54,7 +54,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=MvcAuth}/{action=Login}/{id?}")
+    pattern: "{controller=Auth}/{action=Login}/{id?}")
     .WithStaticAssets();
 
 

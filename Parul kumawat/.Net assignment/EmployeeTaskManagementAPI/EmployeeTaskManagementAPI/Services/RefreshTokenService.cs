@@ -1,6 +1,7 @@
 ﻿
 using EmployeeTaskManagementAPI.Data;
 using EmployeeTaskManagementAPI.Dto;
+using EmployeeTaskManagementAPI.IRepository;
 using EmployeeTaskManagementAPI.IService;
 using EmployeeTaskManagementAPI.Models;
 using Microsoft.AspNetCore.Identity;
@@ -10,20 +11,20 @@ namespace EmployeeTaskManagementAPI.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {
-        private readonly AppDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ITokenService _tokenService;
 
-        public RefreshTokenService(AppDbContext context, UserManager<ApplicationUser> userManager, ITokenService tokenService)
+        public RefreshTokenService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, ITokenService tokenService)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
             _tokenService = tokenService;
         }
         public async Task<string> LogoutAsync(RefreshTokenDto refreshTokenDto)
         {
             
-                var refreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshTokenDto.RefreshToken && x.IsActive);
+                var refreshToken = await _unitOfWork.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshTokenDto.RefreshToken && x.IsActive);
 
                 if (refreshToken == null)
                 {
@@ -33,7 +34,7 @@ namespace EmployeeTaskManagementAPI.Services
                 refreshToken.IsActive = false;
                 refreshToken.RevokedAt = DateTime.UtcNow;
 
-                await _context.SaveChangesAsync();
+                await _unitOfWork.SaveAsync();
                 return "Logout successful";
             }
            
@@ -52,16 +53,16 @@ namespace EmployeeTaskManagementAPI.Services
                     IsActive = true
                 };
 
-                await _context.RefreshTokens.AddAsync(refreshToken);
-                await _context.SaveChangesAsync();
-            
-            
-            
+                await _unitOfWork.RefreshTokens.AddAsync(refreshToken);
+            await _unitOfWork.SaveAsync();
+
+
+
         }
 
         public async Task<TokenResponseDto> RotateRefreshToken(string token)
         {
-            var oldRefreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token && x.IsActive);
+            var oldRefreshToken = await _unitOfWork.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token && x.IsActive);
             if(oldRefreshToken == null)
             {
                 throw new Exception("invalid token");
@@ -88,8 +89,8 @@ namespace EmployeeTaskManagementAPI.Services
                 ExpiresAt = DateTime.UtcNow.AddMinutes(1),
                 IsActive = true
             };
-            await _context.RefreshTokens.AddAsync(refreshToken);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.RefreshTokens.AddAsync(refreshToken);
+            await _unitOfWork.SaveAsync();
             return new TokenResponseDto
             {
                 AccessToken = accessToken,

@@ -1,14 +1,20 @@
-﻿namespace EmpTaskManagementMVC.ViewModel.Tasks
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EmpTaskManagementMVC.ViewModel.Tasks
 {
     public class TaskViewModel
     {
         public int Id { get; set; }
 
+        [Required]
         public string Title { get; set; } = string.Empty;
+        [Required]
 
         public string Description { get; set; } = string.Empty;
+        [Required]
 
         public string AssignedToUserId { get; set; } = string.Empty;
+        [Required]
 
         public string AssignedByUserId { get; set; } = string.Empty;
 

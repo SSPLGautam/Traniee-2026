@@ -1,6 +1,7 @@
 ﻿using EmployeeTaskManagementAPI.Data;
 using EmployeeTaskManagementAPI.Dto.TasksDto;
 using EmployeeTaskManagementAPI.Enum;
+using EmployeeTaskManagementAPI.IRepository;
 using EmployeeTaskManagementAPI.IService;
 using EmployeeTaskManagementAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +13,11 @@ namespace EmployeeTaskManagementAPI.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly AppDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
-        public TaskService(AppDbContext context, UserManager<ApplicationUser> userManager)
+        public TaskService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
         public async Task<string> CreateTaskAsync(CreateTaskDto dto, string assignBy)
@@ -32,8 +33,8 @@ namespace EmployeeTaskManagementAPI.Services
                     CreatedDate = DateTime.UtcNow
 
                 };
-                await _context.Tasks.AddAsync(task);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.Tasks.AddAsync(task);
+                await _unitOfWork.SaveAsync();
                 return "task created successfully";
 
             
@@ -41,13 +42,13 @@ namespace EmployeeTaskManagementAPI.Services
 
         public async Task<List<Tasks>> GetAllTasksAsync()
         {
-            return await _context.Tasks.ToListAsync();
+            return await _unitOfWork.Tasks.GetAllAsync();
         }
 
         public async Task<Tasks> GetTaskById(int id)
         {
             
-                var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
+                var task = await _unitOfWork.Tasks.FirstOrDefaultAsync(x => x.Id == id);
                 if(task == null)
                 {
                     throw new Exception("task does not exist of this id");
@@ -60,7 +61,7 @@ namespace EmployeeTaskManagementAPI.Services
         public async Task<string> UpdateTaskAsync(int id, UpdateTaskDto dto)
         {
             
-                var isTaskExist = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
+                var isTaskExist = await _unitOfWork.Tasks.FirstOrDefaultAsync(x => x.Id == id);
                 if (isTaskExist == null)
                 {
                     return "task does not exist of this id";
@@ -69,8 +70,8 @@ namespace EmployeeTaskManagementAPI.Services
                 isTaskExist.Description = dto.Description;
                 isTaskExist.DueDate = dto.DueDate;
 
-                await _context.SaveChangesAsync();
-                return "task updated successfully";
+            await _unitOfWork.SaveAsync();
+            return "task updated successfully";
 
             
         }
@@ -78,14 +79,14 @@ namespace EmployeeTaskManagementAPI.Services
         public async Task<string> DeleteTaskAsync(int id)
         {
            
-                var isTaskExist = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
+                var isTaskExist = await _unitOfWork.Tasks.FirstOrDefaultAsync(x => x.Id == id);
                 if (isTaskExist == null)
                 {
                     return "task does not exist of this id";
                 }
-                 _context.Tasks.Remove(isTaskExist);
-                await _context.SaveChangesAsync();
-                return "task deleted successfully";
+                 _unitOfWork.Tasks.DeleteAsync(isTaskExist);
+            await _unitOfWork.SaveAsync();
+            return "task deleted successfully";
 
             }
           
@@ -93,13 +94,13 @@ namespace EmployeeTaskManagementAPI.Services
 
         public async Task<List<Tasks>> GetMyTasksAsync(string userId)
         {
-            var tasks = await _context.Tasks.Where(x => x.AssignedToUserId == userId).ToListAsync();
+            var tasks = await _unitOfWork.Tasks.FindAsync(x => x.AssignedToUserId == userId);
             return tasks;
         }
 
         public async Task<string> UpdateTaskStatusAsync(int taskId, string userId, UpdateTaskStatusDto dto)
         {
-            var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == taskId && x.AssignedToUserId == userId);
+            var task = await _unitOfWork.Tasks.FirstOrDefaultAsync(x => x.Id == taskId && x.AssignedToUserId == userId);
 
             if (task == null)
             {
@@ -109,7 +110,7 @@ namespace EmployeeTaskManagementAPI.Services
             task.Status = dto.Status.ToString();
             task.UpdatedDate = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveAsync();
 
             return "Status updated successfully";
         }
