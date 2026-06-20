@@ -1,0 +1,61 @@
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header">
+      <h3>My Leaves</h3>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Leave Type</th>
+
+            <th>From</th>
+
+            <th>To</th>
+
+            <th>Reason</th>
+
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (leave of leaves(); track leave.id) {
+            <tr>
+              <td>
+                {{ leave.leaveType }}
+              </td>
+
+              <td>
+                {{ leave.fromDate | date: 'dd MMM yyyy' }}
+              </td>
+
+              <td>
+                {{ leave.toDate | date: 'dd MMM yyyy' }}
+              </td>
+
+              <td>
+                {{ leave.reason }}
+              </td>
+
+              <td>
+                @if (leave.status === 'Pending') {
+                  <span class="badge bg-warning"> Pending </span>
+                }
+
+                @if (leave.status === 'Approved') {
+                  <span class="badge bg-success"> Approved </span>
+                }
+
+                @if (leave.status === 'Rejected') {
+                  <span class="badge bg-danger"> Rejected </span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

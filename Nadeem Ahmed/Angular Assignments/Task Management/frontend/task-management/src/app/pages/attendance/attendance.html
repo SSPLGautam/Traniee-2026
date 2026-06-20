@@ -1,0 +1,15 @@
+<div class="attendance-card">
+  <h2>Attendance</h2>
+
+  <p>Mark your attendance for today</p>
+
+  <div class="form-check">
+    <button class="btn btn-success" (click)="markAttendance()" [disabled]="marked()">
+      @if (marked()) {
+        Attendance Marked
+      } @else {
+        Mark Attendance
+      }
+    </button>
+  </div>
+</div>

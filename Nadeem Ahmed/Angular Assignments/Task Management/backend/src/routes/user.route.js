@@ -2,7 +2,7 @@ const express = require("express");
 
 const authenticate = require("../middlewares/auth.middleware")
 
-const { getEmployees, updateUser, getUserById, getAllUsers, deleteUser } = require("../controllers/user.controller");
+const { getEmployees, updateUser, getUserById, getAllUsers, deleteUser, getManagers } = require("../controllers/user.controller");
 
 const authorize = require("../middlewares/role.middleware");
 
@@ -21,6 +21,12 @@ router.get(
 
     getEmployees
 );
+
+router.get(
+    "/managers", 
+    authenticate, 
+    authorize("Admin", "Manager", "Employee"),
+    getManagers);
 
 router.get(
     "/",
@@ -49,5 +55,7 @@ router.delete(
     authorize("Admin"),
     deleteUser
 );
+
+
 
 module.exports = router;

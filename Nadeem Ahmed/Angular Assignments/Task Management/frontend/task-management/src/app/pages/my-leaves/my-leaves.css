@@ -1,0 +1,29 @@
+.card {
+
+  border: none;
+
+  border-radius: 16px;
+
+}
+
+.card-header {
+
+  background: #4f46e5;
+
+  color: white;
+
+}
+
+.table {
+
+  margin-bottom: 0;
+
+}
+
+.badge {
+
+  font-size: 13px;
+
+  padding: 8px 12px;
+
+}

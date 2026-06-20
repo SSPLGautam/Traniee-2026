@@ -1,8 +1,10 @@
+const Leave = require("./leave.model");
 const RefreshToken = require("./refreshToken.model");
 const Role = require("./role.model");
 const Task = require("./task.model");
 const User = require("./user.model");
 const UserRole = require("./userRole.model");
+const Attendance = require("./attendance.model")
 
 
 Role.hasMany(User, {
@@ -52,10 +54,39 @@ Role.belongsToMany(User, {
     foreignKey: "roleId"
 });
 
+User.hasMany(Leave, {
+  foreignKey: "employeeId"
+});
+
+Leave.belongsTo(User, {
+  foreignKey: "employeeId",
+  as: "Employee"
+});
+
+User.hasMany(Leave, {
+  foreignKey: "managerId"
+});
+
+User.hasMany(Attendance, {
+    foreignKey: "employeeId"
+});
+
+Attendance.belongsTo(User, {
+    foreignKey: "employeeId",
+    as: "Employee"
+})
+
+Leave.belongsTo(User, {
+  foreignKey: "managerId",
+  as: "Manager"
+});
+
 module.exports = {
     User,
     Role,
     Task,
     RefreshToken,
-    UserRole
+    UserRole,
+    Leave,
+    Attendance
 };

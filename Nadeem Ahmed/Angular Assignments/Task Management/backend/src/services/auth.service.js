@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const authRepository =
-require("../repositories/auth.repository");
+    require("../repositories/auth.repository");
 
 const register = async (userData) => {
 
@@ -111,60 +111,63 @@ const login = async (
 };
 
 const refreshAccessToken =
-async (refreshToken) => {
+    async (refreshToken) => {
 
-    if (!refreshToken) {
-        throw new Error(
-            "Refresh token required"
-        );
-    }
+        if (!refreshToken) {
+            throw new Error(
+                "Refresh token required"
+            );
+        }
 
-    const decoded =
-        jwt.verify(
-            refreshToken,
-            process.env
-                .REFRESH_TOKEN_SECRET
-        );
-
-    const user =
-        await authRepository
-            .findUserByIdWithRole(
-                decoded.id
+        const decoded =
+            jwt.verify(
+                refreshToken,
+                process.env
+                    .REFRESH_TOKEN_SECRET,
+                {
+                    expiresIn: '7d'
+                }
             );
 
-    if (!user) {
-        throw new Error(
-            "User not found"
-        );
-    }
+        const user =
+            await authRepository
+                .findUserByIdWithRole(
+                    decoded.id
+                );
 
-    const tokenRecord =
-        await authRepository
-            .findRefreshToken(
-                refreshToken
+        if (!user) {
+            throw new Error(
+                "User not found"
+            );
+        }
+
+        const tokenRecord =
+            await authRepository
+                .findRefreshToken(
+                    refreshToken
+                );
+
+        if (!tokenRecord) {
+            throw new Error(
+                "Invalid refresh token"
+            );
+        }
+
+        const accessToken =
+            jwt.sign(
+                {
+                    id: user.id,
+                    email: user.email,
+                    role: user.Role.name
+                },
+                process.env.ACCESS_TOKEN_SECRET,
+                {
+                    expiresIn: "30m"
+                }
             );
 
-    if (!tokenRecord) {
-        throw new Error(
-            "Invalid refresh token"
-        );
-    }
-
-    const accessToken =
-        jwt.sign(
-            {
-                id: user.id,
-                email: user.email,
-                role: user.Role.name
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            {
-                expiresIn: "30m"
-            }
-        );
-
-    return accessToken;
-};
+        return accessToken;
+    };
 
 const logout = async (userId) => {
 

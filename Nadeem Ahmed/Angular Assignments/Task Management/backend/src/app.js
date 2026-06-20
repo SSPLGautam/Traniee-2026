@@ -1,10 +1,12 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const cors = require("cors")
+const cors = require("cors");
 
-const authRoutes = require("./routes/auth.route")
-const taskRoutes = require("./routes/task.route")
-const userRoutes = require("./routes/user.route")
+const authRoutes = require("./routes/auth.route");
+const taskRoutes = require("./routes/task.route");
+const userRoutes = require("./routes/user.route");
+const leaveRoutes = require("./routes/leave.route");
+const attendanceRoutes = require("./routes/attendance.route");
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.use(
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/tasks", taskRoutes);
-app.use("/api/v1/users", userRoutes)
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/leaves", leaveRoutes);
+app.use("/api/v1/attendance", attendanceRoutes);
 
-module.exports=app;
+module.exports = app;

@@ -1,8 +1,4 @@
-const {
-    User,
-    Role,
-    RefreshToken
-} = require("../models");
+const { User, Role, RefreshToken } = require("../models");
 
 const findUserByEmail = async (email) => {
     return await User.findOne({

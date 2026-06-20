@@ -1,0 +1,73 @@
+<div class="leave-container">
+  <div class="leave-card">
+    <div class="header">
+      <h2>Apply Leave</h2>
+
+      <p>Submit your leave request</p>
+    </div>
+
+    <form [formGroup]="leaveForm" (ngSubmit)="applyLeave()">
+      <div class="form-group">
+        <label> Leave Type </label>
+
+        <select formControlName="leaveType">
+          <option value="">Select Leave Type</option>
+
+          @for (type of leaveTypes; track type) {
+            <option [value]="type">
+              {{ type }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label> From Date </label>
+
+          <input type="date" 
+          formControlName="fromDate" 
+          [min] = "today"
+          />
+        </div>
+
+        <div class="form-group">
+          <label> To Date </label>
+
+          <input type="date" 
+          formControlName="toDate" 
+          [min] = "leaveForm.value.fromDate || today"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label> Assign Manager </label>
+
+        <select formControlName="managerId">
+          <option value="">Select Manager</option>
+
+          @for (manager of managers(); track manager.id) {
+            <option [value]="manager.id">
+              {{ manager.username }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label> Reason </label>
+
+        <textarea rows="5" formControlName="reason"> </textarea>
+      </div>
+
+      <button type="submit" [disabled]="loading()">
+        @if (loading()) {
+          Submitting...
+        } @else {
+          Apply Leave
+        }
+      </button>
+    </form>
+  </div>
+</div>

@@ -39,10 +39,19 @@ const deleteUser =
 
     };
 
+const getManagers =
+    async () => {
+
+        return await userRepository
+            .getManagers();
+
+    };
+
 module.exports = {
     getEmployees,
     getAllUsers,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    getManagers
 };

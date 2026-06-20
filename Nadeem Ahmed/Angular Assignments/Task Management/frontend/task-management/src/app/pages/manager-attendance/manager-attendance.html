@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header">
+      <h3>Attendance Records</h3>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Employee</th>
+
+            <th>Date</th>
+
+            <th>Time</th>
+
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (attendance of attendances(); track attendance.id) {
+            <tr>
+              <td>
+                {{ attendance.Employee?.username }}
+              </td>
+
+              <td>
+                {{ attendance.attendanceDate }}
+              </td>
+
+              <td>
+                {{ attendance.attendanceTime | date: 'hh:mm a' }}
+              </td>
+
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-success': attendance.status === 'Present',
+
+                    'bg-danger': attendance.status === 'Absent',
+
+                    'bg-warning': attendance.status === 'Leave',
+                  }"
+                >
+                  {{ attendance.status }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header">
+      <h3>All Leave Requests</h3>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Employee</th>
+
+            <th>Manager</th>
+
+            <th>Leave Type</th>
+
+            <th>From</th>
+
+            <th>To</th>
+
+            <th>Reason</th>
+
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (leave of leaves(); track leave.id) {
+            <tr>
+              <td>
+                {{ leave.Employee?.username }}
+              </td>
+
+              <td>
+                {{ leave.Manager?.username }}
+              </td>
+
+              <td>
+                {{ leave.leaveType }}
+              </td>
+
+              <td>
+                {{ leave.fromDate | date: 'dd MMM yyyy' }}
+              </td>
+
+              <td>
+                {{ leave.toDate | date: 'dd MMM yyyy' }}
+              </td>
+
+              <td>
+                {{ leave.reason }}
+              </td>
+
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-warning': leave.status === 'Pending',
+
+                    'bg-success': leave.status === 'Approved',
+
+                    'bg-danger': leave.status === 'Rejected',
+                  }"
+                >
+                  {{ leave.status }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

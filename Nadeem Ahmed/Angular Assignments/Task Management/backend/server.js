@@ -8,8 +8,9 @@ const {
 const seedDatabase =
 require("./src/seeders/data.seeder");
 
-const PORT =
-process.env.PORT || 5000;
+require("./src/cron/attendance.cron")
+
+const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
 

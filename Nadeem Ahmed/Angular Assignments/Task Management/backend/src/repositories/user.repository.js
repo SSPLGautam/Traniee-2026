@@ -94,10 +94,28 @@ const deleteUser =
 
     };
 
+const getManagers = async () => {
+
+    return await User.findAll({
+
+        include: [
+            {
+                model: Role,
+                where: {
+                    id: 2
+                }
+            }
+        ]
+
+    });
+
+};
+
 module.exports = {
     getEmployees,
     getAllUsers,
     getUserById,
+    getManagers,
     updateUser,
     deleteUser
 }

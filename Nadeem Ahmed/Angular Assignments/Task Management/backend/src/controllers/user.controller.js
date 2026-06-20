@@ -34,6 +34,41 @@ const getEmployees =
 
     };
 
+
+const getManagers =
+    async (req, res) => {
+
+        try {
+
+            const managers =
+                await userService
+                    .getManagers();
+
+            return res.status(200)
+                .json({
+
+                    success: true,
+
+                    data: managers
+
+                });
+
+        } catch (error) {
+
+            return res.status(500)
+                .json({
+
+                    success: false,
+
+                    message:
+                        error.message
+
+                });
+
+        }
+
+    };
+
 const getAllUsers =
     async (req, res) => {
 
@@ -178,6 +213,7 @@ const deleteUser =
 module.exports = {
     getEmployees,
     getAllUsers,
+    getManagers,
     getUserById,
     updateUser,
     deleteUser

@@ -1,0 +1,77 @@
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header">
+      <h3>Leave Requests</h3>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Leave Type</th>
+
+            <th>Employee</th>
+
+            <th>From</th>
+
+            <th>To</th>
+
+            <th>Reason</th>
+
+            <th>Status</th>
+
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (leave of leaves(); track leave.id) {
+            <tr>
+              <td>
+                {{ leave.leaveType }}
+              </td>
+
+              <td>
+                {{ leave.Employee?.username }}
+              </td>
+
+              <td>
+                {{ leave.fromDate | date: 'dd MMM yyyy' }}
+              </td>
+
+              <td>
+                {{ leave.toDate | date: 'dd MMM yyyy' }}
+              </td>
+
+              <td>
+                {{ leave.reason }}
+              </td>
+
+              <td>
+                {{ leave.status }}
+              </td>
+
+              <td>
+                <button
+                  class="btn btn-success btn-sm me-2"
+                  (click)="approve(leave.id)"
+                  [disabled]="leave.status !== 'Pending'"
+                >
+                  Approve
+                </button>
+
+                <button
+                  class="btn btn-danger btn-sm"
+                  (click)="reject(leave.id)"
+                  [disabled]="leave.status !== 'Pending'"
+                >
+                  Reject
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
