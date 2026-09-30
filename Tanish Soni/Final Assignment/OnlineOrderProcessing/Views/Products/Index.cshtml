@@ -1,0 +1,87 @@
+﻿@model OnlineOrderProcessing.ViewModels.ProductListViewModel;
+
+
+@{
+	ViewData["Title"] = "Product List ";
+}
+
+<div class="product-container">
+<div class="products-header">
+	<div >
+		<h3>Product List</h3>
+		<p>Manage your products , view stock levels  and update details.</p>
+	</div>
+	<div class="add-product">
+		<a asp-action="Create" asp-controller="Products">+ Add Product</a>
+	</div>
+	
+	
+
+</div>
+
+<form method="get" asp-action="Index">
+	<input placeholder="Search products using name or sku . " asp-for="Search" />
+	
+	<button type="submit">Apply</button>
+</form>
+
+<table>
+	
+
+	<tbody>
+		   @if (Model.Products.Any())
+			{
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>SKU</th>
+						
+						<th>Price</th>
+						<th>Stock</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				var index = 1;
+				foreach (var product in Model.Products)
+				{
+					<tr>
+						<td>@index</td>
+						<td>@product.Name</td>
+						<td>@product.SKU</td>
+						
+						<td>$@product.Price</td>
+						<td>@product.Stock</td>
+					
+						<td class="actions">
+							<a class="edit-btn" asp-action="Edit" asp-controller="Products" asp-route-id=@product.Id>Edit</a>
+							<button data-id=@product.Id class="del-btn" >Del</button>
+						</td>
+					</tr>
+					index++;
+				}
+			}
+			else
+			{
+				<p>Products Not found .</p>
+			}
+		
+		
+		
+		
+	</tbody>
+</table>
+  <div class="delete-container hide">
+	  <div class="delete">
+	  <h4>Press Delete if you want to delete this !!</h4>
+	  <div>
+		  <button type="button" id="cancel-btn">Cancel</button>
+		  <button type="button" id="confirm-delete">Delete</button>
+	  </div>
+		</div>
+  </div>
+</div>
+@section Scripts {
+
+	<script src="~/js/products.js"></script>
+}

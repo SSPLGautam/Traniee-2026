@@ -1,0 +1,148 @@
+main {
+    padding: 0px 24px;
+    height: 460px;
+}
+
+.product-container {
+    max-width: 1100px;
+    margin: auto;
+    border: 1px solid;
+    border-radius: 7px;
+    height: 100%;
+    padding: 9px;
+    position: relative;
+}
+
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-product {
+    width: 132px;
+    display: flex;
+    height: 33px;
+    align-items: center;
+    border-radius: 4px;
+    background-color: #4848ff;
+}
+
+    .add-product a {
+        text-decoration: none;
+        padding: 13px;
+        color: white;
+    }
+
+.product-container form {
+    padding: 9px;
+    display: flex;
+    gap: 12px;
+    border: 1px solid;
+    border-radius: 7px;
+}
+
+table {
+    width: 100%;
+}
+
+.product-container thead tr {
+    height: 36px;
+    background: #f3f3f3;
+}
+
+.product-container tbody tr {
+    height: 36px;
+}
+
+.edit-btn {
+    text-decoration: none;
+    color: white;
+    background: #5858ff;
+    padding: 3px;
+    border-radius: 4px;
+}
+
+.del-btn {
+    text-decoration: none;
+    color: white;
+    background: #ff4e4e;
+    padding: 3px;
+    border-radius: 4px;
+}
+
+.create-product {
+    max-width: 600px;
+    height: 100%;
+    padding: 18px;
+    background-color: white;
+    padding-bottom: 24px;
+    border-radius: 8px;
+    border: 1px solid;
+    width: 100%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .create-product form {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+    }
+    .create-product form div {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+.product-container form input {
+    width: 270px;
+}
+    .create-task form div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .create-task form label {
+        font-weight: 500;
+    }
+
+.delete-container {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    height: 100%;
+    align-items: center;
+}
+
+.delete {
+    background: #e5e5e5;
+    width: 413px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 250px;
+    padding: 15px;
+    flex-direction: column;
+    border-radius: 7px;
+}
+.hide {
+    display: none;
+}
+
+
+.login-container {
+    width: 400px;
+    background-color: white;
+    margin: auto;
+    border-radius: 23px;
+    box-shadow: black;
+    margin-top: 60px;
+    padding: 25px;
+    border: 1px solid black;
+}
