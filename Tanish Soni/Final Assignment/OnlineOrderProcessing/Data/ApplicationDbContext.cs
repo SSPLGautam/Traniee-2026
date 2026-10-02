@@ -17,6 +17,8 @@ namespace OnlineOrderProcessing.Data
 
         public DbSet<OrderItems> OrderItems { get; set; }
 
+        public DbSet<CartItem> CartItems { get; set; }
+
         public DbSet<Payment> Payments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -131,7 +133,9 @@ namespace OnlineOrderProcessing.Data
                 .IsRequired();
 
                 entity.Property(e => e.OrderRequestKey).IsRequired();
-
+                entity.Property(e => e.TotalAmount)
+               .IsRequired()
+               .HasPrecision(10, 2);
                 entity.HasOne(x => x.User)
                 .WithMany(x => x.Orders)
                 .HasForeignKey(x => x.UserId)
@@ -204,6 +208,28 @@ namespace OnlineOrderProcessing.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
+            });
+
+            builder.Entity<CartItem>(e =>
+            {
+                e.HasKey(x => x.Id);
+
+                e.Property(x => x.UserId)
+                    .IsRequired();
+
+                e.Property(x => x.ProductId)
+                    .IsRequired();
+
+                e.Property(x => x.Quantity)
+                    .IsRequired();
+
+                e.HasOne(x => x.Product)
+                    .WithMany()
+                    .HasForeignKey(x => x.ProductId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasIndex(x => new { x.UserId, x.ProductId })
+                    .IsUnique();
             });
         }
 

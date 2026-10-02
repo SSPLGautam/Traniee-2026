@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineOrderProcessing.Services;
 using OnlineOrderProcessing.ViewModels;
+using System.Security.Claims;
 
 namespace OnlineOrderProcessing.Controllers
 {
@@ -14,6 +15,17 @@ namespace OnlineOrderProcessing.Controllers
         }
         public IActionResult Index()
         {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            if (email == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            ViewBag.Email = email;
+            ViewBag.Role = role;
+
+
             return View();
         }
 

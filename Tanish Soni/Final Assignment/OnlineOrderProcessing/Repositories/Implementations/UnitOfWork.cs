@@ -7,11 +7,14 @@ namespace OnlineOrderProcessing.Repositories.Implementations
         private readonly ApplicationDbContext _context;
         public  IProductRepository Products { get; }
 
+        public ICartRepository CartItem { get; }
+
              
         public UnitOfWork (ApplicationDbContext context)
         {
             _context = context;
             Products = new ProductRepository(_context);
+            CartItem = new CartRepository(_context);
            
         }
         public async Task<int> SaveChangesAsync()

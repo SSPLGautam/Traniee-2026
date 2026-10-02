@@ -17,5 +17,12 @@ namespace OnlineOrderProcessing.Repositories.Implementations
         {
             return await _userManager.FindByEmailAsync(email);
         }
+        public async Task<List<string>> GetUserRolesByUser(ApplicationUser user)
+        {
+            
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return roles.ToList();
+        }
     }
 }

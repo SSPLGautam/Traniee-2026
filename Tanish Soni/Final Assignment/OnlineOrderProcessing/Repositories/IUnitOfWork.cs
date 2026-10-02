@@ -5,6 +5,7 @@ namespace OnlineOrderProcessing.Repositories
     {
 
         IProductRepository Products { get; }
+        ICartRepository CartItem { get; }
         Task<int> SaveChangesAsync();
 
     

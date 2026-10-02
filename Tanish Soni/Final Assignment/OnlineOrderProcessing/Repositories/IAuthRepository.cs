@@ -1,4 +1,5 @@
-﻿using OnlineOrderProcessing.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using OnlineOrderProcessing.Models;
 using OnlineOrderProcessing.ViewModels;
 
 namespace OnlineOrderProcessing.Repositories
@@ -6,5 +7,6 @@ namespace OnlineOrderProcessing.Repositories
     public interface IAuthRepository
     {
         Task<ApplicationUser> GetUserByEmail(string email);
+        Task<List<string>> GetUserRolesByUser(ApplicationUser user);
     }
 }

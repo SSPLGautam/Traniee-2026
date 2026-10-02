@@ -1,40 +1,20 @@
-﻿let productId = null;
+﻿
 
-function openDelete(id) {
-    productId = id;
-    $(".delete-container").removeClass("hide");
-}
+$(document).on("click", "#add-to-cart", function () {
+    const id = $(this).data("id");
 
-function cancelDelete() {
-    productId = null;
-    $(".delete-container").addClass("hide");
-}
-
-function confirmDelete() {
-
-    if (!productId) {
-        return;
-    }
-
-    console.log("Deleting product:", productId);
 
     $.ajax({
-        url: "/Products/Delete",
-        type: "POST",
+        url: "/cart/Add",
+        type: "post",
         data: {
-            Id: productId
+            productId:id
         },
         success: function (response) {
-
             if (response.success) {
-
-                cancelDelete();
-
-                alert(response.message);
-
-                location.reload();
-
-            } else {
+                alert(response.message)
+            }
+            else {
 
                 alert(response.message);
             }
@@ -42,22 +22,6 @@ function confirmDelete() {
         error: function () {
             alert("Something went wrong.");
         }
-    });
-}
+    })
 
-$(document).on("click", ".del-btn", function () {
-
-    const id = $(this).data("id");
-
-    openDelete(id);
-});
-
-$(document).on("click", "#confirm-delete", function () {
-
-    confirmDelete();
-});
-
-$(document).on("click", "#cancel-btn", function () {
-
-    cancelDelete();
-});
+})
