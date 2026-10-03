@@ -1,6 +1,7 @@
 ﻿using OnlineOrderProcessing.Services;
 using OnlineOrderProcessing.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 namespace OnlineOrderProcessing.Controllers
 {
     public class ProductsController : Controller
@@ -18,6 +19,8 @@ namespace OnlineOrderProcessing.Controllers
             var model = await _productService.GetAllProducts(Search) ?? new ProductListViewModel();
             return View(model);
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Adminproducts(string? Search)
         {

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineOrderProcessing.Services;
 using System.Security.Claims;
 
 namespace OnlineOrderProcessing.Controllers
 {
+    [Authorize]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
@@ -15,6 +17,7 @@ namespace OnlineOrderProcessing.Controllers
         public async Task<IActionResult> Index()
         {
          
+
             var Model = await _cartService.GetCartItemsListByUserId();
 
             return View(Model);

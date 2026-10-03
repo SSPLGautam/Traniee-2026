@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.EntityFrameworkCore.Storage;
+
 namespace OnlineOrderProcessing.Repositories
 {
     public interface IUnitOfWork
@@ -6,8 +8,23 @@ namespace OnlineOrderProcessing.Repositories
 
         IProductRepository Products { get; }
         ICartRepository CartItem { get; }
-        Task<int> SaveChangesAsync();
 
-    
+        IOrderRepository Order { get; }
+
+        IOrderEventRepository OrderEvent { get; }
+
+        IOrderItemRepository OrderItem { get; }
+
+        IPayementRepository Payment { get; }
+
+
+        Task<int> SaveChangesAsync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
+
+        Task CommitTransactionAsync();
+
+        Task RollbackTransactionAsync();
+
+
     }
 }
