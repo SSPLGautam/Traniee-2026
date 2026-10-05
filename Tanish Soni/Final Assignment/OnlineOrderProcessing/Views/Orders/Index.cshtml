@@ -114,7 +114,15 @@
 
 
                     <div class="order-summary">
-
+                        @if (order.Status == OnlineOrderProcessing.Enums.OrderStatus.Pending)
+                        {
+                            <a asp-controller="Payment"
+                            asp-action="Index"
+                            asp-route-orderId="@order.Id"
+                            class="primary-btn">
+                                Pay Now
+                            </a>
+                        }
                         <div>
                             <span>Items</span>
                             <strong>

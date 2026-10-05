@@ -20,7 +20,7 @@ namespace OnlineOrderProcessing.Repositories.Implementations
                 query = query.Where(q => q.Name.Contains(Search) || q.SKU.Contains(Search));
             }
 
-            var products = await query.ToListAsync();
+                var products = await query.ToListAsync();
 
             return products;
         }

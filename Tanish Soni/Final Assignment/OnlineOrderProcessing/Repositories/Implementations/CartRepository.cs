@@ -14,6 +14,10 @@ namespace OnlineOrderProcessing.Repositories.Implementations
         {
             _context = context;
         }
+        public async Task<List<CartItem>> GetAllByUserId(string userId)
+        {
+            return await _context.CartItems.Where(c => c.UserId == userId).ToListAsync();
+        }
         public async Task<IEnumerable<CartItemViewModel>> GetAllCartItemByUserId(string userId)
         {
             var cartItems= await _context.CartItems

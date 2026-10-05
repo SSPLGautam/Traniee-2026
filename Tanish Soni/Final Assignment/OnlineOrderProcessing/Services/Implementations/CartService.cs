@@ -48,6 +48,15 @@ namespace OnlineOrderProcessing.Services.Implementations
                 };
 
             }
+            var product = await _unitOfWork.Products.GetByIdAsync(productId);
+            if (product.Stock<1)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = $"{product.Name } is  out of stock  "
+                };
+            }
             var existingCartItem = await _unitOfWork.CartItem.GetCartItem(userId, productId);
             int result;
             if (existingCartItem != null)
@@ -57,6 +66,7 @@ namespace OnlineOrderProcessing.Services.Implementations
             }
             else
             {
+
                 var cartItem = new CartItem
                 {
                     Id = Guid.NewGuid(),

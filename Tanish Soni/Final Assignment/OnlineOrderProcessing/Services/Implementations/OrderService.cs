@@ -77,7 +77,7 @@ namespace OnlineOrderProcessing.Services.Implementations
                 {
                     Id = Guid.NewGuid(),
                     CreatedAt = DateTime.UtcNow,
-                    Status = OrderStatus.Processing,
+                    Status = OrderStatus.Pending,
                     OrderRequestKey = Model.OrderRequestKey,
                     UserId = userId,
                     TotalAmount = totalAmount
@@ -113,6 +113,13 @@ namespace OnlineOrderProcessing.Services.Implementations
                 };
 
                 await _unitOfWork.OrderEvent.AddAsync(orderEvent);
+
+                var cartItems = await _unitOfWork.CartItem.GetAllByUserId(userId);
+
+                foreach (var item in cartItems)
+                {
+                    _unitOfWork.CartItem.Delete(item);
+                }
 
                 await _unitOfWork.SaveChangesAsync();
 

@@ -7,5 +7,6 @@ namespace OnlineOrderProcessing.Repositories
     {
         Task<IEnumerable<CartItemViewModel>> GetAllCartItemByUserId(string userId);
         Task<CartItem> GetCartItem(string userId, Guid productId);
+        Task<List<CartItem>> GetAllByUserId(string userId);
     }
 }

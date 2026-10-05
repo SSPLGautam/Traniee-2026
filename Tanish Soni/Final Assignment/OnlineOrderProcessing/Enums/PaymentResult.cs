@@ -2,8 +2,8 @@
 {
     public enum PaymentResult
     {
-        Pending,
+        Failed,
         Success,
-        Failed
+        Timeout
     }
 }

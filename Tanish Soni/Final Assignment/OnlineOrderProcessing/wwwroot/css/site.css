@@ -453,9 +453,15 @@ a {
     border: 1px solid #ddd;
     padding: 15px;
     border-radius: 5px;
+
     margin-bottom: 10px;
 }
 
     .payment-method:hover {
         background-color: #f8f8f8;
     }
+
+#pay-btn {
+    height: 50px;
+    margin-top: 64px;
+}

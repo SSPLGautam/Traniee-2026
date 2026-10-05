@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineOrderProcessing.Services;
 using OnlineOrderProcessing.ViewModels;
 
 namespace OnlineOrderProcessing.Controllers
 {
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly IOrderService _orderService;
@@ -18,6 +20,10 @@ namespace OnlineOrderProcessing.Controllers
 
         {
             var model =await _orderService.GetOrders();
+            if (model==null)
+            {
+                return NotFound();
+            }
             return View(model);
         }
 

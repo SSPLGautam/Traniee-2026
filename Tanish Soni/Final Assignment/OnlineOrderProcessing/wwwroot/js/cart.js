@@ -27,7 +27,13 @@ $(document).on("click", ".payment-btn", function () {
             Items:items
         }),
         success: function (response) {
-            console.log(response)
+            if (response.success) {
+                console.log(response)
+                window.location.href = "/payment/" + response.orderId
+            }
+            alert(response.message);
+            $(this).prop("disabled", false);
+            $(this).text("Proceed to Payment →");
         },
         error: function (xhr) {
 
