@@ -1,4 +1,5 @@
-﻿using OnlineOrderProcessing.ViewModels;
+﻿using OnlineOrderProcessing.Enums;
+using OnlineOrderProcessing.ViewModels;
 
 namespace OnlineOrderProcessing.Services
 {
@@ -6,5 +7,11 @@ namespace OnlineOrderProcessing.Services
     {
         Task<CreateOrderResponseViewModel> Create(CreateOrderViewModel Model);
         Task<OrderListViewModel> GetOrders();
+        Task<AdminOrdersViewModel> GetAllOrders();
+        Task<Result> UpdateOrderStatus(
+                Guid orderId,
+          OrderStatus newStatus);
+        Task<AdminOrdersViewModel> GetAllFailedOrders();
+     
     }
 }

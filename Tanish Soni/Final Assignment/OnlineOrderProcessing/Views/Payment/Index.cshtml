@@ -36,7 +36,7 @@
                             </div>
 
                             <div class="col-md-2">
-                                ₹@item.UnitPrice.ToString("N2")
+                                ₹@item.Product.Price.ToString("N2")
                             </div>
 
                             <div class="col-md-2">
@@ -45,7 +45,7 @@
 
                             <div class="col-md-3 text-end">
                                 <strong>
-                                    ₹@((item.UnitPrice * item.Quantity).ToString("N2"))
+                                    ₹@((item.Product.Price * item.Quantity).ToString("N2"))
                                 </strong>
                             </div>
 
@@ -79,9 +79,7 @@
                     </div>
 
 
-                    <form asp-controller="Payment"
-                          asp-action="Pay"
-                          method="post">
+                  
 
                         @Html.AntiForgeryToken()
 
@@ -89,14 +87,14 @@
                                name="orderId"
                                value="@Model.OrderId" />
 
-                        <button id="pay-btn" type="submit"
+                        <button data-id=@Model.OrderId id="pay-btn"
                                 class=" primary-btn  w-100">
 
                             Pay Now
 
                         </button>
 
-                    </form>
+                 
 
 
                    
@@ -109,3 +107,8 @@
     </div>
 
 </div>
+
+
+@section Scripts {
+    <script src="~/js/payment.js"></script>
+}

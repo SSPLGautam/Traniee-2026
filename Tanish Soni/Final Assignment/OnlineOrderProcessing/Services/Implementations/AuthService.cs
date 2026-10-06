@@ -56,5 +56,68 @@ namespace OnlineOrderProcessing.Services.Implementations
                 Message = "Login Successfully!"
             };
         }
+           
+         public async Task Logout()
+        {
+             await _signInManager.SignOutAsync();
+        }
+        public async Task<Result> Register(RegisterViewModel model)
+        {
+            var existingUser =
+                await _authRepository.GetUserByEmail(model.Email);
+
+            if (existingUser != null)
+            {
+                return new Result
+                {
+                    Success = false,
+                    Message = "Email is already registered."
+                };
+            }
+
+            var user = new ApplicationUser
+            {
+                Id = Guid.NewGuid().ToString(),
+              
+                Email = model.Email,
+                UserName = model.Email
+            };
+
+            var result = await _authRepository.CreateUserAsync(
+                user,
+                model.Password);
+
+            if (!result.Succeeded)
+            {
+                
+
+                return new Result
+                {
+                    Success = false,
+                    Message = "UnSuccessful Registration"
+                };
+            }
+
+            var roleResult =
+                await _authRepository.AddUserToRoleAsync(
+                    user,
+                    "Customer");
+
+            if (!roleResult.Succeeded)
+            {
+                
+                return new Result
+                {
+                    Success = false,
+                    Message = "UnSuccessful Registration"
+                };
+            }
+
+            return new Result
+            {
+                Success = true,
+                Message = "Registration successful."
+            };
+        }
     }
 }

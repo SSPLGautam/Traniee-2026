@@ -4,6 +4,7 @@
     {
         OrderCreated,
         PaymentStarted,
+        StockReleased,
         PaymentSucceeded,
         PaymentFailed,
         OrderConfirmed,

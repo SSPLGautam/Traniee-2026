@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using OnlineOrderProcessing.Services;
 using OnlineOrderProcessing.ViewModels;
 using System.Security.Claims;
@@ -55,5 +57,43 @@ namespace OnlineOrderProcessing.Controllers
             return RedirectToAction("Index", "Account");
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Invalid Data!");
+                return View(model);
+            }
+
+            var result = await _authServices.Register(model);
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.Message);
+                return View(model);
+            }
+
+            return RedirectToAction("Login", "Account");
+        }
+
+
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _authServices.Logout();
+
+            return RedirectToAction("Login", "Account");
+        }
     }
 }

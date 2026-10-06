@@ -19,8 +19,11 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IOrderWorkflowService, OrderWorkflowService>();
 builder.Services.AddScoped<IPaymentService, PaymentServices>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();

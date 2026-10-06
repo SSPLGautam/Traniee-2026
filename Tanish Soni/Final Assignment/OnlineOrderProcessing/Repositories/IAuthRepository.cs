@@ -8,5 +8,13 @@ namespace OnlineOrderProcessing.Repositories
     {
         Task<ApplicationUser> GetUserByEmail(string email);
         Task<List<string>> GetUserRolesByUser(ApplicationUser user);
+
+        Task<IdentityResult> CreateUserAsync(
+            ApplicationUser user,
+            string password);
+
+        Task<IdentityResult> AddUserToRoleAsync(
+            ApplicationUser user,
+            string role);
     }
 }

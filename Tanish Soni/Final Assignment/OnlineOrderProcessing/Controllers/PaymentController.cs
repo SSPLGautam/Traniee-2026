@@ -24,7 +24,7 @@ namespace OnlineOrderProcessing.Controllers
             return View(model);
         }
 
-        [HttpGet("/Pay/{orderId:guid}")]
+        [HttpPost]
         public async Task<IActionResult> Pay(Guid orderId)
         {
             var model = await _paymentService.Pay(orderId);

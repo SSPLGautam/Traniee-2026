@@ -72,6 +72,17 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             try
             {
+                var orderStartEvent = new OrderEvent {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = DateTime.UtcNow,
+                    Details = "Payment Started",
+                    EventType = OrderEventType.PaymentStarted,
+                    OrderId = OrderId,
+                };
+
+
+                await _unitOfWork.OrderEvent.AddAsync(orderStartEvent);
+
                 var result = await _unitOfWork.Payment.Pay();
 
                 var payment = new Payment

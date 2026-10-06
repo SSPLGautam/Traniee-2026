@@ -15,14 +15,15 @@ namespace OnlineOrderProcessing.Repositories.Implementations
         }
         public async Task<Payment> GetPaymentByOrderId(Guid orderId)
         {
-            return  _context.Payments.FirstOrDefault(p => p.OrderId == orderId);
+            return  _context.Payments.OrderByDescending(o=>o.CreatedAt).FirstOrDefault(p => p.OrderId == orderId);
         }
         public async Task<PaymentResult> Pay()
         {
             int randomNumber = Random.Shared.Next(1, 101);
             await Task.Delay(2000);
             if (randomNumber <= 60) {
-                return PaymentResult.Success;
+                return PaymentResult.Success
+                    ;
             }
             else if (randomNumber <= 90)
             {
