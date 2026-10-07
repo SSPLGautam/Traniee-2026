@@ -24,5 +24,14 @@ namespace OnlineOrderProcessing.Repositories.Implementations
 
             return products;
         }
+
+        public async Task<bool> TryDecreaseStockAsync(Guid productId, int quantity)
+        {
+            var rows = await _context.Products
+                .Where(p => p.Id == productId && p.Stock >= quantity)
+                .ExecuteUpdateAsync(s => s.SetProperty(p => p.Stock, p => p.Stock - quantity));
+
+            return rows == 1;
+        }
     }
 }

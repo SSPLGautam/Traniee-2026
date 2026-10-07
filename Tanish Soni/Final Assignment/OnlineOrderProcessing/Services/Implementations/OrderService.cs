@@ -21,114 +21,81 @@ namespace OnlineOrderProcessing.Services.Implementations
         }
 
 
-        public async Task<CreateOrderResponseViewModel> Create(CreateOrderViewModel Model)
+        public async Task<CreateOrderResponseViewModel> Create(CreateOrderViewModel model)
         {
-            //var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userId = "28b11383-bf4e-4132-8c7c-a851a3cf8a35";
+            var userId = "28b11383-bf4e-4132-8c7c-a851a3cf8a35"; // TODO: real user
 
-            var existingOrder = await _unitOfWork.Order.GetOrderByKey(Model.OrderRequestKey);
-            if (existingOrder != null)
-            {
-                return new CreateOrderResponseViewModel
-                {
-                    Success = true,
-                    Message = "Order Exit",
-                    OrderId = existingOrder.Id,
-                    Status = existingOrder.Status
-                };
-            }
+            if (model.Items == null || !model.Items.Any() || model.Items.Any(i => i.Quantity <= 0))
+                return Fail("Invalid order items.");
+
+            var items = model.Items
+                .GroupBy(i => i.ProductId)
+                .Select(g => new { ProductId = g.Key, Quantity = g.Sum(x => x.Quantity) })
+                .OrderBy(i => i.ProductId)
+                .ToList();
+
+            var existing = await _unitOfWork.Order.GetOrderByKey(model.OrderRequestKey);
+            if (existing != null) return Existing(existing);
+
             await _unitOfWork.BeginTransactionAsync();
-
             try
             {
-
-                var productExist = true;
-                foreach (var item in Model.Items)
-                {
-                    var product = await _unitOfWork.Products.GetByIdAsync(item.ProductId);
-                    if (product == null)
-                    {
-                        productExist = false;
-                    }
-                }
-                if (!productExist)  
-                {
-                    return new CreateOrderResponseViewModel
-                    {
-                        Success = false,
-                        Message = "One or more products do not exist."
-                    };
-                }
-                foreach (var item in Model.Items)
-                {
-                    var product = await _unitOfWork.Products.GetByIdAsync(item.ProductId);
-                    if (product.Stock < item.Quantity)
-                    {
-                        return new CreateOrderResponseViewModel
-                        {
-                            Success = false,
-                            Message = $"Not enough stock for {product.Name}"
-                        };
-                    }
-                }
-                decimal totalAmount = 0;
-                foreach (var item in Model.Items)
-                {
-                    var product = await _unitOfWork.Products.GetByIdAsync(item.ProductId);
-                    totalAmount += product.Price * item.Quantity;
-                }
                 var order = new Order
                 {
                     Id = Guid.NewGuid(),
                     CreatedAt = DateTime.UtcNow,
                     Status = OrderStatus.Pending,
-                    OrderRequestKey = Model.OrderRequestKey,
-                    UserId = userId,
-                    TotalAmount = totalAmount
+                    OrderRequestKey = model.OrderRequestKey,
+                    UserId = userId
                 };
 
-                await _unitOfWork.Order.AddAsync(order);
+                decimal total = 0;
+                var orderItems = new List<OrderItems>();
 
-                foreach (var item in Model.Items)
+                foreach (var item in items)
                 {
                     var product = await _unitOfWork.Products.GetByIdAsync(item.ProductId);
+                    if (product == null)
+                    {
+                        await _unitOfWork.RollbackTransactionAsync();
+                        return Fail("One or more products do not exist.");
+                    }
 
-                    product.Stock -= item.Quantity;
+                    if (!await _unitOfWork.Products.TryDecreaseStockAsync(item.ProductId, item.Quantity))
+                    {
+                        await _unitOfWork.RollbackTransactionAsync();
+                        return Fail($"Insufficient stock for {product.Name}");
+                    }
 
-                    var orderItem = new OrderItems
+                    total += product.Price * item.Quantity;
+                    orderItems.Add(new OrderItems
                     {
                         Id = Guid.NewGuid(),
                         OrderId = order.Id,
                         ProductId = product.Id,
                         Quantity = item.Quantity,
                         UnitPrice = product.Price
-                    };
-
-                    await _unitOfWork.OrderItem.AddAsync(orderItem);
+                    });
                 }
 
-                var orderEvent = new OrderEvent
+                order.TotalAmount = total;
+                await _unitOfWork.Order.AddAsync(order);
+                foreach (var oi in orderItems) await _unitOfWork.OrderItem.AddAsync(oi);
+
+                await _unitOfWork.OrderEvent.AddAsync(new OrderEvent
                 {
                     Id = Guid.NewGuid(),
                     CreatedAt = DateTime.UtcNow,
                     OrderId = order.Id,
                     Details = "An Order is Created",
                     EventType = OrderEventType.OrderCreated
-                };
+                });
 
-                await _unitOfWork.OrderEvent.AddAsync(orderEvent);
-
-                var cartItems = await _unitOfWork.CartItem.GetAllByUserId(userId);
-
-                foreach (var item in cartItems)
-                {
-                    _unitOfWork.CartItem.Delete(item);
-                }
+                foreach (var cartItem in await _unitOfWork.CartItem.GetAllByUserId(userId))
+                    _unitOfWork.CartItem.Delete(cartItem);
 
                 await _unitOfWork.SaveChangesAsync();
-
                 await _unitOfWork.CommitTransactionAsync();
-
 
                 return new CreateOrderResponseViewModel
                 {
@@ -137,32 +104,26 @@ namespace OnlineOrderProcessing.Services.Implementations
                     OrderId = order.Id,
                     Status = order.Status
                 };
-
-
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException)  
             {
                 await _unitOfWork.RollbackTransactionAsync();
 
-                return new CreateOrderResponseViewModel
-                {
-                    Success = false,
-                    Message = "Stock was updated by another user. Please try again."
-                };
+                var winner = await _unitOfWork.Order.GetOrderByKey(model.OrderRequestKey);
+                return winner != null ? Existing(winner) : Fail("Unable to Create !");
             }
             catch (Exception)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-
-                return new CreateOrderResponseViewModel
-                {
-                    Success = false,
-                    Message = "Unable to Create !"
-                };
-
+                return Fail("Unable to Create !");
             }
         }
 
+        private static CreateOrderResponseViewModel Fail(string message) =>
+            new() { Success = false, Message = message };
+
+        private static CreateOrderResponseViewModel Existing(Order o) =>
+            new() { Success = true, Message = "Order already exists", OrderId = o.Id, Status = o.Status };
 
         public async Task<OrderListViewModel> GetOrders()
         {

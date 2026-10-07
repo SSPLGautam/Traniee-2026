@@ -46,6 +46,9 @@ namespace OnlineOrderProcessing.Data
                 entity.Property(e => e.Stock)
                 .IsRequired();
 
+                entity.ToTable(t => t.HasCheckConstraint("CK_Products_Stock_NonNegative", "[Stock] >= 0"));
+
+
 
                 entity.HasData(
 
@@ -127,15 +130,18 @@ namespace OnlineOrderProcessing.Data
             builder.Entity<Order>(entity =>
             {
                 entity.HasKey(e => e.Id);
-             
+
+                entity.HasIndex(e => e.OrderRequestKey).IsUnique();
 
                 entity.Property(e => e.CreatedAt)
                 .IsRequired();
 
-                entity.Property(e => e.OrderRequestKey).IsRequired();
+                entity.Property(e => e.OrderRequestKey).HasMaxLength(100).IsRequired();
+
                 entity.Property(e => e.TotalAmount)
                .IsRequired()
                .HasPrecision(10, 2);
+
                 entity.HasOne(x => x.User)
                 .WithMany(x => x.Orders)
                 .HasForeignKey(x => x.UserId)
@@ -205,7 +211,7 @@ namespace OnlineOrderProcessing.Data
                 entity.HasOne(e => e.Product)
                 .WithMany(e => e.OrderItems)
                 .HasForeignKey(e => e.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             });

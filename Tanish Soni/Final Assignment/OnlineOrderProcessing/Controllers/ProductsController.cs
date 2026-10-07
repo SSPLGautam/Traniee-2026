@@ -28,11 +28,13 @@ namespace OnlineOrderProcessing.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Create()
         {
             return View(new CreateProductViewModel());
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateProductViewModel Model)
         {
@@ -52,11 +54,13 @@ namespace OnlineOrderProcessing.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid Id)
         {
             var model = await _productService.GetProductForEditById(Id);
             return  View(model);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Edit (EditProductViewModel Model)
@@ -75,7 +79,7 @@ namespace OnlineOrderProcessing.Controllers
 
             return RedirectToAction("Index");
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete( Guid Id)
         {

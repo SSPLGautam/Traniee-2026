@@ -27,6 +27,7 @@ namespace OnlineOrderProcessing.Controllers
             }
             return View(model);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> AOrders()
 
@@ -36,6 +37,7 @@ namespace OnlineOrderProcessing.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> FailedOrders()
 
@@ -65,6 +67,7 @@ namespace OnlineOrderProcessing.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(
