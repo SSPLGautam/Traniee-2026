@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnlineOrderProcessing.Models;
 
@@ -23,7 +24,25 @@ namespace OnlineOrderProcessing.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+
             base.OnModelCreating(builder);
+
+            builder.Entity<IdentityRole>().HasData(
+              new IdentityRole 
+             {
+                  Id= "BADC4D63-A4FB-438A-B29F-8B6421AD6D8D",
+                  Name="Admin",
+                  NormalizedName="ADMIN",
+                  ConcurrencyStamp= "BADC4D63-A4FB-438A-B29F-8B6421AD6D8D"
+              },
+             new IdentityRole {
+                 Id = "WQDC4D63-A4FB-438A-B29F-8B6421AD6D8D",
+                 Name = "Customer",
+                 NormalizedName = "CUSTOMER",
+                 ConcurrencyStamp = "1FFCE66A-E440-43CE-A0CC-A4B75E238A01"
+
+             });
 
             builder.Entity<Product>(entity =>
             {
