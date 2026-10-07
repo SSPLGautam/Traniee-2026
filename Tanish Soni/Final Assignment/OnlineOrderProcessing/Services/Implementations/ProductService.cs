@@ -11,19 +11,44 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             _unitOfWork = unitOfWork;
         }
-
-
-        public async Task<ProductListViewModel> GetAllProducts(string? Search)
+        public async Task<ProductListViewModel> GetAllProducts(
+    string? search,
+    int page = 1,
+    int pageSize = 5)
         {
-            var products = await _unitOfWork.Products.GetAllProductsAsync(Search);
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            var totalProducts =
+                await _unitOfWork.Products.GetProductCountAsync(search);
+
+            var totalPages =
+                (int)Math.Ceiling(totalProducts / (double)pageSize);
+
+            if (totalPages > 0 && page > totalPages)
+            {
+                page = totalPages;
+            }
+
+            var products =
+                await _unitOfWork.Products.GetAllProductsAsync(
+                    search,
+                    page,
+                    pageSize);
+
             return new ProductListViewModel
             {
-                Search = Search,
-                Products = products
+                Search = search,
+                Products = products,
+
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
             };
         }
 
-       
 
         public async Task<bool> CreateProduct(CreateProductViewModel Model)
         {

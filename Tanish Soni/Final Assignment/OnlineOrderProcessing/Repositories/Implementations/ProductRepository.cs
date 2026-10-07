@@ -11,20 +11,41 @@ namespace OnlineOrderProcessing.Repositories.Implementations
         {
             _context = context;
         }
-        public async Task<List<Product>> GetAllProductsAsync(string? Search)
+        public async Task<List<Product>> GetAllProductsAsync(
+      string? search,
+      int page,
+      int pageSize)
         {
             var query = _context.Products.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(Search))
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(q => q.Name.Contains(Search) || q.SKU.Contains(Search));
+                query = query.Where(q =>
+                    q.Name.Contains(search) ||
+                    q.SKU.Contains(search));
             }
 
-                var products = await query.ToListAsync();
+            var products = await query
+                .OrderBy(x => x.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return products;
         }
+        public async Task<int> GetProductCountAsync(string? search)
+        {
+            var query = _context.Products.AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(q =>
+                    q.Name.Contains(search) ||
+                    q.SKU.Contains(search));
+            }
+
+            return await query.CountAsync();
+        }
         public async Task<bool> TryDecreaseStockAsync(Guid productId, int quantity)
         {
             var rows = await _context.Products

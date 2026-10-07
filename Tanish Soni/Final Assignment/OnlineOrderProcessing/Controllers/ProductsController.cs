@@ -14,17 +14,27 @@ namespace OnlineOrderProcessing.Controllers
         }
 
         [HttpGet]
-        public async  Task<IActionResult> Index(string? Search)
+        public async  Task<IActionResult> Index(string? Search,int page=1)
         {
-            var model = await _productService.GetAllProducts(Search) ?? new ProductListViewModel();
+            var model = await _productService.GetAllProducts(
+                Search,
+                page,
+                5);
+
             return View(model);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> Adminproducts(string? Search)
+        public async Task<IActionResult> Adminproducts(
+    string? Search,
+    int page = 1)
         {
-            var model = await _productService.GetAllProducts(Search) ?? new ProductListViewModel();
+            var model = await _productService.GetAllProducts(
+                Search,
+                page,
+                5);
+
             return View(model);
         }
 

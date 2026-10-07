@@ -5,7 +5,10 @@ namespace OnlineOrderProcessing.Services
 {
     public interface IProductService
     {
-        Task<ProductListViewModel> GetAllProducts(string? Search);
+        Task<ProductListViewModel> GetAllProducts(
+    string? search,
+    int page = 1,
+    int pageSize = 5);
 
         Task<bool> CreateProduct(CreateProductViewModel Model);
 
