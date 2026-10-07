@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="account-container">
+
+    <h1>Account Profile</h1>
+
+    <hr />
+
+    <div class="info">
+      
+        <p>Email :  @ViewBag.Email</p>
+        <p>Roles : @ViewBag.Role </p>
+       
+        
+        <p>Phone Number :  95871222444</p>
+    </div>
+
+    <form asp-action="Logout" asp-controller="Account" method="post">
+        <button class="logout-btn" type="submit">Log out </button>
+    </form>
+
+</div>

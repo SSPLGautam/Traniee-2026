@@ -1,0 +1,228 @@
+﻿@model OnlineOrderProcessing.ViewModels.PaymentPageViewModel
+
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<div class="container mt-5">
+
+    <div class="row">
+
+        <div class="col-md-7">
+
+            <h2 class="mb-4">Payment</h2>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Order Summary</strong>
+                </div>
+
+                <div class="card-body">
+
+                    <p class="text-muted">
+                        Order ID:
+                        <strong>@Model.OrderId</strong>
+                    </p>
+
+                    <hr />
+
+                    @if (Model.Items != null && Model.Items.Any())
+                    {
+                        foreach (var item in Model.Items)
+                        {
+                            <div class="row align-items-center mb-3">
+
+                                <div class="col-md-5">
+                                    <strong>
+                                        @item.Product.Name
+                                    </strong>
+
+                                    <div class="text-muted small">
+                                        SKU: @item.Product.SKU
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    ₹@item.UnitPrice.ToString("N2")
+                                </div>
+
+                                <div class="col-md-2">
+                                    Qty: @item.Quantity
+                                </div>
+
+                                <div class="col-md-3 text-end">
+                                    <strong>
+                                        ₹@((item.UnitPrice * item.Quantity).ToString("N2"))
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                            <hr />
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">
+                            No items found for this order.
+                        </p>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT: PAYMENT -->
+        <div class="col-md-5">
+
+            <div class="card">
+
+                <div class="card-header">
+                    <strong>Payment Details</strong>
+                </div>
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">
+                        Select Payment Method
+                    </h5>
+
+
+                    <!-- Demo Payment Methods -->
+
+                    <div class="form-check border rounded p-3 mb-2">
+
+                        <input class="form-check-input"
+                               type="radio"
+                               name="paymentMethod"
+                               id="card"
+                               value="Card"
+                               checked />
+
+                        <label class="form-check-label"
+                               for="card">
+
+                            <strong>Credit / Debit Card</strong>
+
+                            <div class="text-muted small">
+                                Visa, Mastercard, RuPay
+                            </div>
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="form-check border rounded p-3 mb-2">
+
+                        <input class="form-check-input"
+                               type="radio"
+                               name="paymentMethod"
+                               id="upi"
+                               value="UPI" />
+
+                        <label class="form-check-label"
+                               for="upi">
+
+                            <strong>UPI</strong>
+
+                            <div class="text-muted small">
+                                PhonePe, Google Pay, Paytm
+                            </div>
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="form-check border rounded p-3 mb-2">
+
+                        <input class="form-check-input"
+                               type="radio"
+                               name="paymentMethod"
+                               id="netbanking"
+                               value="NetBanking" />
+
+                        <label class="form-check-label"
+                               for="netbanking">
+
+                            <strong>Net Banking</strong>
+
+                            <div class="text-muted small">
+                                All major banks
+                            </div>
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="form-check border rounded p-3 mb-4">
+
+                        <input class="form-check-input"
+                               type="radio"
+                               name="paymentMethod"
+                               id="cod"
+                               value="COD" />
+
+                        <label class="form-check-label"
+                               for="cod">
+
+                            <strong>Cash on Delivery</strong>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- TOTAL -->
+
+                    <div class="d-flex justify-content-between mb-3">
+
+                        <span>
+                            Total Amount
+                        </span>
+
+                        <strong class="fs-4">
+                            ₹@Model.TotalAmmount.ToString("N2")
+                        </strong>
+
+                    </div>
+
+
+
+                    <form asp-controller="Orders"
+                          asp-action="Pay"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="orderId"
+                               value="@Model.OrderId" />
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+
+                            Pay ₹@Model.TotalAmmount.ToString("N2")
+
+                        </button>
+
+                    </form>
+
+
+                    <p class="text-muted text-center small mt-3 mb-0">
+                        This is a simulated payment for demonstration.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

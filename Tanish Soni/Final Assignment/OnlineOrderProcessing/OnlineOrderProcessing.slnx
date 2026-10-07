@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="../ConcurrencyDemo/ConcurrencyDemo.csproj" Id="45acf10f-b190-4509-a378-7277e551cc84" />
+  <Project Path="OnlineOrderProcessing.csproj" />
+</Solution>

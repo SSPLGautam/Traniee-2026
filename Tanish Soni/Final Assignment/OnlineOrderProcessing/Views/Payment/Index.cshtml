@@ -1,0 +1,114 @@
+﻿@model OnlineOrderProcessing.ViewModels.PaymentPageViewModel
+
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<div class="payment-container">
+
+    <h2>Payment</h2>
+
+    <p class="text-muted">
+        Order ID: <strong>@Model.OrderId</strong>
+    </p>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+
+            <div class="card">
+
+                <div class="card-header">
+                    <strong>Order Items</strong>
+                </div>
+
+                <div class="card-body">
+
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="row border-bottom py-3">
+
+                            <div class="col-md-5">
+                                <strong>@item.Product.Name</strong>
+
+                                <small class="d-block text-muted">
+                                    SKU: @item.Product.SKU
+                                </small>
+                            </div>
+
+                            <div class="col-md-2">
+                                ₹@item.Product.Price.ToString("N2")
+                            </div>
+
+                            <div class="col-md-2">
+                                x @item.Quantity
+                            </div>
+
+                            <div class="col-md-3 text-end">
+                                <strong>
+                                    ₹@((item.Product.Price * item.Quantity).ToString("N2"))
+                                </strong>
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card">
+
+                <div class="card-header">
+                    <strong>Payment Summary</strong>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between mb-3">
+
+                        <span>Total Amount</span>
+
+                        <strong>
+                            ₹@Model.TotalAmmount.ToString("N2")
+                        </strong>
+
+                    </div>
+
+
+                  
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="orderId"
+                               value="@Model.OrderId" />
+
+                        <button data-id=@Model.OrderId id="pay-btn"
+                                class=" primary-btn  w-100">
+
+                            Pay Now
+
+                        </button>
+
+                 
+
+
+                   
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <script src="~/js/payment.js"></script>
+}

@@ -1,0 +1,149 @@
+﻿@model OnlineOrderProcessing.ViewModels.CartItemListViewModel
+
+<div class="cart-container">
+
+    <div class="left-part">
+
+        <div class="heading">
+            <h4>Your Cart</h4>
+            <span>@Model.TotalItem items</span>
+        </div>
+
+        <div class="cartItems">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Cal Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model.CartItems.Any())
+                    {
+                        var index = 1;
+
+                        foreach (var item in Model.CartItems)
+                        {
+                            <tr data-product-id= @item.Product.Id class="cart-item">
+
+                                <td>@index</td>
+
+                                <td>@item.Product.Name</td>
+
+                                <td>$@item.Product.Price</td>
+
+                                <td class="quantity">
+
+                                    <button class="quantity-btn"
+                                            data-id="@item.Id"
+                                            data-change="-1"
+                                        @(item.Quantity <= 1 ? "disabled" : "")>
+                                        -
+                                    </button>
+
+                                    <span class="quan" id="quantity-@item.Id">
+                                        @item.Quantity
+                                    </span>
+
+                                    <button class="quantity-btn"
+                                            data-id="@item.Id"
+                                            data-change="1"
+                                        @(item.Quantity >= item.Product.Stock ? "disabled" : "")>
+                                        +
+                                    </button>
+
+                                </td>
+
+                                <td>
+                                    @item.Price
+                                </td>
+
+                                <td>
+                                    <svg data-id="@item.Id"
+                                         class="remove-btn"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         width="24"
+                                         height="24"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round">
+
+                                        <path d="M18 6 6 18" />
+                                        <path d="m6 6 12 12" />
+
+                                    </svg>
+                                </td>
+
+                            </tr>
+
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6">
+                                Cart items not found.
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="cs">
+            <a asp-action="Index"
+               asp-controller="Products">
+                Continue Shopping
+            </a>
+        </div>
+
+    </div>
+
+
+    @if (Model.CartItems.Any())
+    {
+        <div class="right-part">
+
+            <h5>Order Summary</h5>
+
+            <hr />
+
+            <div class="data">
+                <span>Subtotal</span>
+                <span>@Model.SubTotal</span>
+            </div>
+
+            <div class="data">
+                <span>Shipping</span>
+                <span>$0</span>
+            </div>
+
+            <hr />
+
+            <div class="data">
+                <h4>Total</h4>
+                <h4>@Model.SubTotal</h4>
+            </div>
+
+            <button class="payment-btn">               Proceed to Order →
+            </button>
+
+        </div>
+    }
+
+</div>

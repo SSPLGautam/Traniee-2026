@@ -1,0 +1,13 @@
+﻿@model OnlineOrderProcessing.ViewModels.CartItemListViewModel
+
+@{
+    ViewData["Title"] = "Cart Page";
+}
+
+<div id="cart-content">
+    @await Html.PartialAsync("_CartContent", Model)
+</div>
+
+@section Scripts {
+    <script src="~/js/cart.js"></script>
+}

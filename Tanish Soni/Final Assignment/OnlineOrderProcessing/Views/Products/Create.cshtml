@@ -1,0 +1,38 @@
+﻿@model OnlineOrderProcessing.ViewModels.CreateProductViewModel;
+@{
+	ViewData["title"] = "Create";
+}
+
+<div class="create-product">
+	<div>
+	<h4>Create New Product</h4>
+	<p>Fill in the details to create a new Product .</p>
+	</div>
+	<form asp-action="Create" method="post">
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<div>
+			<label asp-for="Name">Enter Product Name :</label>
+			<input asp-for="Name" placeholder="Enter Product Name :" />
+			<span asp-validation-for="Name" class="text-danger small"></span>
+		</div>
+		
+		<div>
+			<label asp-for="Price">Price :</label>
+			<input asp-for="Price" placeholder="Enter Product  Price :" />
+			<span asp-validation-for="Price" class="text-danger small"></span>
+		</div>
+		
+		<div>
+			<label asp-for="Stock">Enter Stock </label>
+
+			<input asp-for="Stock"  />
+
+			<span asp-validation-for="Stock"
+				  class="text-danger small"></span>
+		</div>
+		
+		<button class="btn btn-secondary w-100 fw-semibold py-2 mt-3 " type="submit">Create</button>
+	</form>
+
+</div>
+

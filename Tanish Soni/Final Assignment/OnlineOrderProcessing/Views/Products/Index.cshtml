@@ -1,0 +1,98 @@
+﻿@model OnlineOrderProcessing.ViewModels.ProductListViewModel;
+
+
+@{
+	ViewData["Title"] = "Product List ";
+}
+
+<div class="products-container">
+<div class="products-header">
+	<div >
+		<h3>Products</h3>
+		<p>Discover our latest collection of quality product at great price .</p>
+	</div>
+
+		<form method="get" asp-action="Index">
+			<input placeholder="Search products using name or sku . " asp-for="Search" />
+
+			<button class="primary-btn" type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search preview-icon"><path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" /></svg> Search</button>
+		</form>
+
+	
+	
+
+</div>
+
+<div class="products">
+
+		   @if (Model.Products.Any())
+			{
+				
+			
+				foreach (var product in Model.Products)
+				{
+					<div class="product">
+						<img  alt="Image"/>
+						<p>@product.Name</p>
+
+						<p>@product.SKU</p>
+						<p>$@product.Price</p>
+						<p>In Stock (@product.Stock)</p>
+					<button data-id=@product.Id id="add-to-cart" class="primary-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart preview-icon"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18" /><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25" /><circle cx="18" cy="20" r="2" /><circle cx="8" cy="20" r="2" /></svg> Add to Cart</button>
+					</div>
+					
+				}
+			}
+			else
+			{
+				<p>Products Not found .</p>
+			}
+		</div>
+	@if (Model.TotalPages > 1)
+	{
+		<div class="pagination">
+
+			@if (Model.CurrentPage > 1)
+			{
+				<a asp-action="Index"
+				   asp-controller="Products"
+				   asp-route-page="@(Model.CurrentPage - 1)"
+				   asp-route-Search="@Model.Search">
+					← Previous
+				</a>
+			}
+
+
+			@for (int i = 1; i <= Model.TotalPages; i++)
+			{
+				<a asp-action="Index"
+				   asp-controller="Products"
+				   asp-route-page="@i"
+				   asp-route-Search="@Model.Search"
+				   class="@(i == Model.CurrentPage ? "active" : "")">
+
+					@i
+
+				</a>
+			}
+
+
+			@if (Model.CurrentPage < Model.TotalPages)
+			{
+				<a asp-action="Index"
+				   asp-controller="Products"
+				   asp-route-page="@(Model.CurrentPage + 1)"
+				   asp-route-Search="@Model.Search">
+					Next →
+				</a>
+			}
+
+		</div>
+	}
+
+
+		
+@section Scripts {
+
+	<script src="~/js/products.js"></script>
+}

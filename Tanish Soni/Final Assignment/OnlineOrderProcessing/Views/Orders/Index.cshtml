@@ -1,0 +1,149 @@
+﻿@model OnlineOrderProcessing.ViewModels.OrderListViewModel
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div class="orders-container">
+
+    <div class="orders-header">
+        <div>
+            <h1>My Orders</h1>
+            <p>View and track your orders</p>
+        </div>
+    </div>
+
+
+
+    @if (!Model.Orders.Any())
+    {
+        <div class="no-orders">
+            <h3>No Orders Found</h3>
+            <p>You haven't placed any orders yet.</p>
+
+            <a href="/Products" class="btn-primary">
+                Browse Products
+            </a>
+        </div>
+    }
+    else
+    {
+        foreach (var order in Model.Orders)
+        {
+            <div class="order-card">
+
+                <div class="order-header">
+
+                    <div>
+                        <h3>
+                            Order #
+                            @order.Id.ToString().Substring(0, 8)
+                        </h3>
+
+                        <span class="order-date">
+                            Placed on
+                            @order.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")
+                        </span>
+                    </div>
+
+
+                    <div class="order-info">
+
+                        <span class="status ">
+                            @order.Status
+                        </span>
+
+                        <div class="order-total">
+                            ₹@order.TotalAmount.ToString("N2")
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div id="items-@order.Id" class="order-items">
+
+                    <table> 
+
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>SKU</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in order.Items)
+                            {
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            @item.Product.Name
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @item.Product.SKU
+                                    </td>
+
+                                    <td>
+                                        $@item.UnitPrice.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        @item.Quantity
+                                    </td>
+
+                                    <td>
+                                        $@(item.UnitPrice * item.Quantity)
+                                    </td>
+
+                                </tr>   
+                            }
+
+                        </tbody>
+
+                    </table>
+
+
+
+                    <div class="order-summary">
+                        @if (order.Status == OnlineOrderProcessing.Enums.OrderStatus.Pending)
+                        {
+                            <a asp-controller="Payment"
+                            asp-action="Index"
+                            asp-route-orderId="@order.Id"
+                            class="primary-btn">
+                                Pay Now
+                            </a>
+                        }
+                        <div>
+                            <span>Items</span>
+                            <strong>
+                                @order.TotalItems
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Total</span>
+                            <strong>
+                                ₹@order.TotalAmount.ToString("N2")
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    }
+
+</div>
+
