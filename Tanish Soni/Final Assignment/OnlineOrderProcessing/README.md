@@ -1,12 +1,20 @@
 # Online Order Processing & Inventory System
 
 An ASP.NET Core MVC based Online Order Processing and Inventory Management System.
+ 
+# Use this for login 
+ 
+ # As Admin 
+ 
+  - Email="admin1212@gmail.com"
+  - Password="Admin@1212"
+  
+ # As Customer
 
-Include all the functionlity that is include in the assigment 
-
----
-
-# 1. Technologies Used
+  - Email="customer1212@gmail.com"
+  - Password="Admin@1212"
+     
+# 1. Tools Used
 
 ## Backend
 
@@ -36,28 +44,27 @@ Include all the functionlity that is include in the assigment
 
 - Microsoft SQL Server
 - Entity Framework Core Migrations
-
+- Code to database approach
 ---
 
-# 2. Main Features
+# Main Features
 
 ## Customer Features
 
 Customers can:
 
-- Register an account
+- Register 
 - Login
 - Logout
-- View products
-- View product details
+- Products Page
+- Cart Page
 - Add products to cart
 - Update cart quantity
-- Remove products from cart
+- Remove product from cart
 - Create an order
-- Make a simulated payment
+- Make a Demo Payment
 - Retry payment up to 3 times
-- View their orders
-- Track order status
+- Orders Page
 
 ## Admin Features
 
@@ -120,6 +127,7 @@ user/admin) → stock returned
 
 Invalid status transitions are rejected.
 
+``` example
 For example:
 
 Delivered -> Processing
@@ -131,43 +139,22 @@ Similarly:
 Shipped -> Paid
 
 is not allowed.
+```
 
-All order status transition rules are handled by the OrderWorkflowService.
+All order status transition rules are written in OrderWorkflowService.
 
 ---
 
-# 5. Payment Simulation
+# 5. Demo Payment
 
-The application contains a simulated payment system.
+A random number generate using thing handle demo payment
 
-Each payment attempt randomly produces one of the following results:
-
-- Success - approximately 60%
-- Failure - approximately 30%
-- Timeout - approximately 10%
+- Success -  60%
+- Failure -  30%
+- Timeout -  10%
 
 Every payment attempt is stored in the database.
 
-Example:
-
-Attempt 1 -> Failed
-Attempt 2 -> Failed
-Attempt 3 -> Success
-
-The order then becomes:
-
-Paid
-
-If all three attempts fail or timeout:
-
-Attempt 1 -> Failed
-Attempt 2 -> Timeout
-Attempt 3 -> Failed
-
-Then:
-
-Order -> Cancelled
-Stock -> Released
 
 A maximum of 3 payment attempts is allowed.
 
@@ -229,9 +216,8 @@ OnlineOrderProcessing/
 
 ## Overselling Prevention
 
-Overselling is prevented using optimistic concurrency with RowVersion. The Product entity contains a byte[]
+To optimis concurrency use RowVersion and Include a byte[] RowVersion property in product entity and in Ef core configue it to IsRowVersion()
 
-RowVersion property and EF Core configures it using IsRowVersion().
 
 ```csharp
 
@@ -241,14 +227,7 @@ builder.Entity<Product>()
 .IsRowVersion();
 
 ```
-- When two users try to purchase the same product at the same time, both may initially read the same stock and
-RowVersion.
-
-- The first request successfully updates the product and SQL Server changes the RowVersion. The second
-request uses the old RowVersion, so EF Core detects the conflict and throws DbUpdateConcurrencyException. 
-The
-- failed transaction is rolled back. Therefore concurrent requests cannot silently overwrite stock changes and overselling
-is prevented.
+- 
 
 ```Example
 Example:
@@ -259,8 +238,8 @@ Final Stock >= 0
 ```
 ## Duplicate Request Detection
 
-Duplicate requests are detected using OrderRequestKey. Before creating an order, the application checks whether an
-order with the same key already exists. If it exists, the existing order is returned instead of creating another order.
+When user create a order than it also send a unique OrderRequest Key using this we find the order if it already made and return 
+the same orderId
 
 ```csharp
 var existingOrder =
@@ -268,12 +247,9 @@ await _unitOfWork.Order.GetOrderByKey(
 Model.OrderRequestKey);
 ```
 
-A unique database index provides an additional database-level guarantee:
 
 ```database
 modelBuilder.Entity<Order>()
 .HasIndex(x => x.OrderRequestKey)
 .IsUnique();
 ```
-Therefore one OrderRequestKey can create only one order. This protects against double-clicks, network retries,
-repeated requests, and accidental duplicate submissions
