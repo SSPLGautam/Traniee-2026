@@ -1,0 +1,63 @@
+﻿@model HelpdeskSystem.Models.Ticket
+
+@{
+    ViewData["Title"] = "Update Status";
+}
+
+<div class="ticket-container">
+
+    <div class="ticket-header">
+        <h2>Update Status</h2>
+        <p>@Model.Title</p>
+    </div>
+
+    <div class="ticket-card">
+
+        <p>
+            <strong>Current Status:</strong>
+            @Model.Status
+        </p>
+
+        <form action="/api/tickets/@Model.Id/status"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <label>Select Status</label>
+
+            <select name="status"
+                    class="filter-input"
+                    required>
+
+                <option value="">
+                    Select Status
+                </option>
+
+                @foreach (var status in ViewBag.NextStatuses)
+                {
+                    <option value="@status">
+                        @status
+                    </option>
+                }
+
+            </select>
+
+            <div class="ticket-buttons">
+
+                <button type="submit"
+                        class="ticket-button">
+                    Save
+                </button>
+
+                <a href="/Ticket/Details/@Model.Id"
+                   class="ticket-button">
+                    Back
+                </a>
+                <input type="hidden" asp-for="RowVersion" />
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

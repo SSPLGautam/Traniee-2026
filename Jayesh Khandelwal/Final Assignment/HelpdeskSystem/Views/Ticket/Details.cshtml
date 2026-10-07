@@ -1,0 +1,90 @@
+﻿@model HelpdeskSystem.Models.Ticket
+
+@{
+    ViewData["Title"] = "Ticket Details";
+}
+
+<div class="ticket-container">
+
+    <div class="ticket-header">
+        <h2>Ticket Details</h2>
+        <p>View and manage ticket</p>
+    </div>
+
+    <div class="ticket-card">
+        <h3>@Model.Title</h3>
+
+        <p class="ticket-description">
+            @Model.Description
+        </p>
+        <p>
+            <strong>Priority:</strong>
+            @Model.Priority
+        </p>
+        <p>
+            <strong>Status:</strong>
+            @Model.Status
+        </p>
+        <p>
+            <strong>Assigned To:</strong>
+            @if (Model.AssignedToUser != null)
+            {
+                @Model.AssignedToUser.Email
+            }
+            else
+            {
+                <span>Not Assigned</span>
+            }
+        </p>
+        <p>
+            <strong>Created:</strong>
+            @Model.CreatedAt.ToString("dd-MM-yyyy HH:mm")
+        </p>
+        <p>
+            <strong>First Response Due:</strong>
+            @Model.FirstResponseDue.ToString("dd-MM-yyyy HH:mm")
+        </p>
+
+        <p>
+            <strong>Resolution Due:</strong>
+            @Model.ResolutionDue.ToString("dd-MM-yyyy HH:mm")
+        </p>
+        @if (User.IsInRole("CompanyAdmin") || User.IsInRole("Agent"))
+        {
+            <div class="ticket-actions">
+                @if (Model.Status != TicketStatus.Closed)
+                {
+                    <a asp-controller="Ticket" asp-action="Assign" asp-route-id="@Model.Id" class="ticket-button">
+                        Assign Ticket
+                    </a>
+                    <a asp-controller="Ticket" asp-action="Status" asp-route-id="@Model.Id" class="ticket-button">
+                        Update Status
+                    </a>
+                }
+                <a asp-controller="Ticket" asp-action="Comments" asp-route-id="@Model.Id" class="ticket-button">
+                    Comments
+                </a>
+
+                <a asp-controller="Ticket" asp-action="History"asp-route-id="@Model.Id" class="ticket-button">
+                    History
+                </a>
+
+            </div>
+        }
+        @if (User.IsInRole("Customer"))
+            {
+            <div class="ticket-actions">
+                            
+                <a asp-controller="Ticket" asp-action="Comments" asp-route-id="@Model.Id" class="ticket-button">
+                    Comments
+                </a>
+
+            </div>
+        }
+        <div class="ticket-buttons">
+            <a asp-controller="Ticket" asp-action="Index" class="ticket-button">Back to Tickets </a>
+        </div>
+       
+
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@model HelpdeskSystem.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="login-container">
+    <div class="form">
+
+        <h2>Login</h2>
+
+        <form asp-action="Login" method="post">
+
+            <div>
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="input" />
+                <span asp-validation-for="Email"></span>
+            </div>
+
+            <div>
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="input" type="password" />
+                <span asp-validation-for="Password"></span>
+            </div>
+
+            <button type="submit" class="btn-login">Login</button>
+            <p>Dont have an Account?<a asp-controller="Account" asp-action="Register">Register</a></p>
+            <div asp-validation-summary="ModelOnly"></div>
+
+        </form>
+
+    </div>
+</div>

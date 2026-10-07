@@ -1,0 +1,563 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+.login-container {
+    width: 400px;
+    margin: 80px auto;
+}
+
+.form {
+    background-color: white;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 15px 0;
+    box-sizing: border-box;
+}
+
+.btn {
+    margin:10px;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border:none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .btn:hover {
+        background-color: #555;
+    }
+.btn-login {
+    width: 100%;
+   
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+    .btn-login:hover {
+        background-color: #555;
+    }
+.btn-outline-dark {
+    color: #333;
+    background-color: white;
+    border: 1px solid #333;
+}
+
+    .btn-outline-dark:hover {
+        color: white;
+        background-color: #333;
+        border-color: #333;
+    }
+textarea:focus,
+input:focus,
+select:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #333;
+}
+
+button:focus,
+button:focus-visible,
+a:focus,
+a:focus-visible,
+select:focus,
+select:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.ticket-container {
+    width: 90%;
+    margin: 30px auto;
+}
+
+.ticket-header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+    .ticket-header h2 {
+        font-size: 36px;
+        margin-bottom: 1px;
+    }
+
+    .ticket-header p {
+        font-size: 18px;
+        color: #555;
+    }
+
+.ticket-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+}
+
+.ticket-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+    .ticket-card h3 {
+        margin-bottom: 18px;
+        font-size: 26px;
+    }
+
+.ticket-description {
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.ticket-card p {
+    font-size: 17px;
+}
+
+.ticket-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.ticket-button {
+    padding: 9px 16px;
+    margin:3px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+    .ticket-button:hover {
+        background-color: #333;
+        color: white;
+    }
+.ticket-filters {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+}
+
+.filter-input {
+    padding: 9px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 15px;
+}
+
+.overdue-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+}
+
+.filter-button {
+    padding: 9px 16px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+    .filter-button:hover {
+        background-color: #333;
+        color: white;
+    }
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 35px;
+}
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #333;
+    box-shadow: none;
+}
+
+.ticket-overdue {
+    display: inline-block;
+    background-color: #dc3545;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.notification-area {
+    position: relative;
+    margin-right: 15px;
+}
+
+.notification-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.notification-icon {
+    width: 30px;
+}
+
+.notification-count {
+    position: absolute;
+    top: -7px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 2px 5px;
+    border-radius: 50%;
+    background-color: black;
+    color: white;
+    font-size: 11px;
+    text-align: center;
+    line-height: 14px;
+}
+
+.notification-panel {
+    display: none;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    width: 320px;
+    background-color: white;
+    border: 1px solid #222;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+.notification-header {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+}
+
+.notification-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+    .notification-item:hover {
+        background-color: #f5f5f5;
+    }
+
+.notification-time {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+    color: #777;
+}
+
+.no-notifications {
+    padding: 15px;
+    text-align: center;
+    color: #777;
+}
+.dashboard-page {
+    width: 90%;
+    margin: 40px auto;
+}
+
+.dashboard-header {
+    margin-bottom: 35px;
+    text-align:center;
+}
+
+    .dashboard-header h2 {
+        font-size: 36px;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-header p {
+        font-size: 17px;
+        color: #666;
+    }
+
+.dashboard-section {
+    margin-top: 40px;
+}
+
+    .dashboard-section h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+.dashboard-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
+.dashboard-summary {
+    grid-template-columns: repeat(2, 260px);
+}
+
+.dashboard-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 22px;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+    .dashboard-card h4 {
+        margin: 0 0 15px 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .dashboard-card h2 {
+        margin: 0;
+        font-size: 32px;
+    }
+
+    .dashboard-card:hover {
+        border-color: #333;
+    }
+.create-user-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.create-user-header {
+    margin-bottom: 25px;
+}
+
+    .create-user-header h2 {
+        margin-bottom: 5px;
+    }
+
+    .create-user-header p {
+        color: #777;
+    }
+
+.create-user-form .form-group {
+    margin-bottom: 20px;
+}
+
+.create-user-form label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+}
+
+.create-user-form input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+    .create-user-form input:focus {
+        outline: none;
+        border-color: #555;
+    }
+
+.validation-error,
+.validation-summary {
+    color: #d33;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.create-btn,
+.cancel-btn {
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+
+.create-btn {
+    background: #333;
+    color: white;
+}
+
+.cancel-btn {
+    background: #eee;
+    color: #333;
+}
+
+.edit-ticket {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 25px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+    .edit-ticket div {
+        margin-bottom: 18px;
+    }
+
+    .edit-ticket label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    .edit-ticket input,
+    .edit-ticket textarea,
+    .edit-ticket select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+    .edit-ticket textarea {
+        height: 120px;
+        resize: vertical;
+    }
+
+    
+
+   
+
+.assign-title {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 25px;
+}
+
+.assign-ticket {
+    width: 85%;
+    margin: 0 auto;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    box-sizing: border-box;
+}
+
+    .assign-ticket div {
+        margin-bottom: 20px;
+    }
+
+    .assign-ticket label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .assign-ticket input,
+    .assign-ticket textarea,
+    .assign-ticket select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .assign-ticket textarea {
+        height: 150px;
+        resize: vertical;
+    }
+
+        .assign-ticket input:focus,
+        .assign-ticket textarea:focus,
+        .assign-ticket select:focus {
+            outline: none;
+            border-color: #999;
+        }
+
+    .assign-ticket button,
+    .assign-ticket a {
+        display: inline-block;
+        padding: 10px 24px;
+        margin-right: 20px;
+        border: 1px solid #333;
+        border-radius: 6px;
+        background: white;
+        color: #222;
+        font-size: 16px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+        .assign-ticket button:hover,
+        .assign-ticket a:hover {
+            background-color: #333;
+            color: white;
+        }
+
+    .assign-ticket .field-validation-error,
+    .assign-ticket .validation-summary-errors {
+        color: #dc3545;
+        font-size: 14px;
+    }
