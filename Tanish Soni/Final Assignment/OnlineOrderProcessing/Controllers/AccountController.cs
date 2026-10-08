@@ -48,13 +48,13 @@ namespace OnlineOrderProcessing.Controllers
             }
             
             var result = await _authServices.Login(model);
-            if (!result.Success)
+            if (result.IsFailure)
             {
-                ModelState.AddModelError("", result.Message);
+                ModelState.AddModelError("", result.ErrorMessage);
                 return View(model);
             }
 
-            return RedirectToAction("Index", "Account");
+            return RedirectToAction("Index", "Products");
         }
 
 
@@ -75,13 +75,13 @@ namespace OnlineOrderProcessing.Controllers
             }
 
             var result = await _authServices.Register(model);
-            if (!result.Success)
+            if (result.IsFailure)
             {
-                ModelState.AddModelError("", result.Message);
+                ModelState.AddModelError("", result.ErrorMessage);
                 return View(model);
             }
 
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Index", "Products");
         }
 
 

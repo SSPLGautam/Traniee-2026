@@ -40,5 +40,10 @@ namespace OnlineOrderProcessing.Repositories.Implementations
         {
             return _context.CartItems.FirstOrDefault(c => c.UserId == userId && c.ProductId == productId);
         }
+        public async Task<int> GetCartItemCountAsync(string userId)
+        {
+            return await _context.CartItems
+                .CountAsync(x => x.UserId == userId);
+        }
     }
 }

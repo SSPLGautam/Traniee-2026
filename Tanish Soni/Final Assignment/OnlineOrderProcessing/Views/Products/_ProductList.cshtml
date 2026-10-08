@@ -1,0 +1,70 @@
+﻿@model OnlineOrderProcessing.ViewModels.ProductListViewModel
+
+<div class="products">
+
+    @if (Model.Products.Any())
+    {
+        foreach (var product in Model.Products)
+        {
+            <div class="product">
+
+                <p>@product.Name</p>
+                <p>@product.SKU</p>
+                <p>$@product.Price</p>
+                <p>In Stock (@product.Stock)</p>
+
+                <button   data-id="@product.Id"
+                        class="primary-btn add-to-cart">
+
+                    Add to Cart
+
+                </button>
+
+            </div>
+        }
+    }
+    else
+    {
+        <p>Products Not found.</p>
+    }
+
+</div>
+
+
+@if (Model.TotalPages > 1)
+{
+    <div class="pagination">
+
+        @if (Model.CurrentPage > 1)
+        {
+            <a href="#"
+               class="pagination-link"
+               data-page="@(Model.CurrentPage - 1)">
+                ← Previous
+            </a>
+        }
+
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <a href="#"
+               class="pagination-link @(i == Model.CurrentPage ? "active" : "")"
+               data-page="@i">
+
+                @i
+
+            </a>
+        }
+
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a href="#"
+               class="pagination-link"
+               data-page="@(Model.CurrentPage + 1)">
+                Next →
+            </a>
+        }
+
+    </div>
+}

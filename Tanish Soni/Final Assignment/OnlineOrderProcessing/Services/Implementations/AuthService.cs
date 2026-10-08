@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using OnlineOrderProcessing.Common;
 using OnlineOrderProcessing.Models;
 using OnlineOrderProcessing.Repositories;
 using OnlineOrderProcessing.ViewModels;
@@ -18,18 +19,14 @@ namespace OnlineOrderProcessing.Services.Implementations
             _authRepository = authRepository;
         }
 
-        public async Task<Result> Login(LoginViewModel model)
+        public async Task<Result<bool>> Login(LoginViewModel model)
         {
             var user = await _authRepository
                 .GetUserByEmail(model.Email);
 
             if (user == null)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "User not registered"
-                };
+                return Result<bool>.Failure("User not registered");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(
@@ -39,40 +36,28 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             if (!result.Succeeded)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "Password not valid"
-                };
+                return  Result<bool>.Failure("Password Invalid");
             }
 
             await _signInManager.SignInAsync(
                 user,
                 isPersistent: true);
 
-            return new Result
-            {
-                Success = true,
-                Message = "Login Successfully!"
-            };
+            return Result<bool>.Success(true);
         }
            
          public async Task Logout()
         {
              await _signInManager.SignOutAsync();
         }
-        public async Task<Result> Register(RegisterViewModel model)
+        public async Task<Result<bool>> Register(RegisterViewModel model)
         {
             var existingUser =
                 await _authRepository.GetUserByEmail(model.Email);
 
             if (existingUser != null)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "Email is already registered."
-                };
+                return Result<bool>.Failure("Email is already registered.");
             }
 
             var user = new ApplicationUser
@@ -89,13 +74,9 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             if (!result.Succeeded)
             {
-                
 
-                return new Result
-                {
-                    Success = false,
-                    Message = "UnSuccessful Registration"
-                };
+
+                return Result<bool>.Failure("UnSuccessful Registration");
             }
 
             var roleResult =
@@ -105,19 +86,14 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             if (!roleResult.Succeeded)
             {
-                
-                return new Result
-                {
-                    Success = false,
-                    Message = "UnSuccessful Registration"
-                };
-            }
 
-            return new Result
-            {
-                Success = true,
-                Message = "Registration successful."
-            };
+                return Result<bool>.Failure("Unsuccessful Registration");
+            }
+            await _signInManager.SignInAsync(
+               user,
+               isPersistent: true);
+
+            return Result<bool>.Success(true);
         }
     }
 }

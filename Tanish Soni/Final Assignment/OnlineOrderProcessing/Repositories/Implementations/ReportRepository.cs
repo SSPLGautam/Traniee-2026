@@ -27,7 +27,7 @@ namespace OnlineOrderProcessing.Repositories.Implementations
 
             if (fromDate.HasValue)
             {
-                orders = orders.Where(x =>
+                orders = orders.Where(x =>  
                     x.CreatedAt >= fromDate.Value);
             }
 

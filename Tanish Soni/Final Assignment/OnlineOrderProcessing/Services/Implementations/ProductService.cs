@@ -1,4 +1,5 @@
-﻿using OnlineOrderProcessing.Models;
+﻿using OnlineOrderProcessing.Common;
+using OnlineOrderProcessing.Models;
 using OnlineOrderProcessing.Repositories;
 using OnlineOrderProcessing.ViewModels;
 
@@ -11,10 +12,10 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             _unitOfWork = unitOfWork;
         }
-        public async Task<ProductListViewModel> GetAllProducts(
-    string? search,
-    int page = 1,
-    int pageSize = 5)
+        public async Task<Result<ProductListViewModel>> GetAllProducts(
+           string? search,
+           int page = 1,
+           int pageSize = 5)
         {
             if (page < 1)
             {
@@ -38,7 +39,7 @@ namespace OnlineOrderProcessing.Services.Implementations
                     page,
                     pageSize);
 
-            return new ProductListViewModel
+            return Result<ProductListViewModel>.Success( new ProductListViewModel
             {
                 Search = search,
                 Products = products,
@@ -46,11 +47,11 @@ namespace OnlineOrderProcessing.Services.Implementations
                 CurrentPage = page,
                 PageSize = pageSize,
                 TotalPages = totalPages
-            };
+            });
         }
 
 
-        public async Task<bool> CreateProduct(CreateProductViewModel Model)
+        public async Task<Result<bool>> CreateProduct(CreateProductViewModel Model)
         {
             var sku = "SKU-" + Guid.NewGuid().ToString("N")[..8].ToUpper();
             var id = Guid.NewGuid();
@@ -67,29 +68,29 @@ namespace OnlineOrderProcessing.Services.Implementations
             await _unitOfWork.Products.AddAsync(product);
 
             await _unitOfWork.SaveChangesAsync();
-            return true;
+            return Result<bool>.Success(true);
         }
 
-        public async Task<EditProductViewModel> GetProductForEditById(Guid Id)
+        public async Task<Result<EditProductViewModel>> GetProductForEditById(Guid Id)
         {
             var product = await _unitOfWork.Products.GetByIdAsync(Id);
-            return new EditProductViewModel
+            return Result<EditProductViewModel>.Success(new EditProductViewModel
             {
 
                 ProductId = product.Id,
                 Name = product.Name,
                 Stock = product.Stock,
                 Price = product.Price,
-            };
+            });
         }
 
 
-        public async Task<bool> EditProduct(EditProductViewModel Model)
+        public async Task<Result<bool>> EditProduct(EditProductViewModel Model)
         {
             var product = await _unitOfWork.Products.GetByIdAsync(Model.ProductId);
             if (product == null)
             {
-                return false;
+                return Result<bool>.Failure("Product not Found");
             }
             product.Name = Model.Name;
             product.Price = Model.Price;
@@ -98,19 +99,19 @@ namespace OnlineOrderProcessing.Services.Implementations
             _unitOfWork.Products.Update(product);
             await _unitOfWork.SaveChangesAsync();
            
-           return true;
+           return Result<bool>.Success(true);
         }
 
-        public async Task<bool> DeleteProduct(Guid Id)
+        public async Task<Result<bool>> DeleteProduct(Guid Id)
         {
             var product = await _unitOfWork.Products.GetByIdAsync(Id);
             if (product==null)
             {
-                return false;
+                return Result<bool>.Failure("Product not found");
             }
             _unitOfWork.Products.Delete(product);
             await _unitOfWork.SaveChangesAsync();
-            return true;
+            return Result<bool>.Success(true);
         }
 
         }

@@ -22,13 +22,13 @@ namespace OnlineOrderProcessing.Controllers
             Guid? productId,
             OrderStatus? status)
         {
-            var model = await _reportService.GetSalesReport(
+            var result = await _reportService.GetSalesReport(
                 fromDate,
                 toDate,
                 productId,
                 status);
 
-            return View(model);
+            return View(result.Value);
         }
     }
 }

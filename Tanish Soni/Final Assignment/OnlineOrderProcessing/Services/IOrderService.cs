@@ -1,17 +1,21 @@
-﻿using OnlineOrderProcessing.Enums;
+﻿using OnlineOrderProcessing.Common;
+using OnlineOrderProcessing.Enums;
 using OnlineOrderProcessing.ViewModels;
 
 namespace OnlineOrderProcessing.Services
 {
     public interface IOrderService
     {
-        Task<CreateOrderResponseViewModel> Create(CreateOrderViewModel Model);
-        Task<OrderListViewModel> GetOrders();
-        Task<AdminOrdersViewModel> GetAllOrders();
-        Task<Result> UpdateOrderStatus(
+        Task<Result< CreateOrderResponseViewModel>> Create(CreateOrderViewModel Model);
+        Task<Result< OrderListViewModel>> GetOrders();
+        Task<Result<AdminOrdersViewModel>> GetAllOrders(
+         int page = 1,
+         int pageSize = 10);
+        Task<Result<bool>> UpdateOrderStatus(
                 Guid orderId,
           OrderStatus newStatus);
-        Task<AdminOrdersViewModel> GetAllFailedOrders();
-     
+        Task<Result<AdminOrdersViewModel>> GetAllFailedOrders();
+
+
     }
 }

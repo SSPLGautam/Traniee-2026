@@ -20,16 +20,29 @@ namespace OnlineOrderProcessing.Controllers
         [HttpGet("/Payment/{orderId:guid}")]
         public async Task<IActionResult> Index(Guid orderId)
         {
-            var model = await _paymentService.GetPaymentPage(orderId);
-            return View(model);
+            var result = await _paymentService.GetPaymentPage(orderId);
+            return View(result.Value);
         }
 
         [HttpPost]
         public async Task<IActionResult> Pay(Guid orderId)
         {
-            var model = await _paymentService.Pay(orderId);
-            
-            return Json(model);
+            var result= await _paymentService.Pay(orderId);
+
+            if (result.IsFailure)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = result.ErrorMessage
+                });
+            }
+
+            return Json(new
+            {
+                success = true,
+                message = "Payment successful"
+            });
 
 
         }

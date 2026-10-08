@@ -1,4 +1,5 @@
-﻿using OnlineOrderProcessing.Models;
+﻿using OnlineOrderProcessing.Common;
+using OnlineOrderProcessing.Models;
 using OnlineOrderProcessing.Repositories;
 using OnlineOrderProcessing.ViewModels;
 using System.Security.Claims;
@@ -15,13 +16,13 @@ namespace OnlineOrderProcessing.Services.Implementations
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<CartItemListViewModel> GetCartItemsListByUserId()
+        public async Task<Result<CartItemListViewModel>> GetCartItemsListByUserId()
         {
 
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
             {
-                return new CartItemListViewModel();
+                return Result<CartItemListViewModel>.Failure("User Not Found");
             }
             var cartItems = await _unitOfWork.CartItem.GetAllCartItemByUserId(userId);
 
@@ -29,33 +30,27 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             var totalItem = cartItems.Count();
 
-            return new CartItemListViewModel
+            return Result<CartItemListViewModel>.Success (new CartItemListViewModel
             {
                 CartItems = cartItems.ToList(),
                 SubTotal = subTotal,
                 TotalItem = totalItem
 
-            };
+            });
         }
-        public async Task<Result> AddToCart(Guid productId)
+        public async Task<Result<bool>> AddToCart(Guid productId)
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId==null)
             {
-                return new Result { 
-                 Success=false,
-                 Message="User not exist"
-                };
+                return Result<bool>.Failure("User not Found");
 
             }
             var product = await _unitOfWork.Products.GetByIdAsync(productId);
             if (product.Stock<1)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = $"{product.Name } is  out of stock  "
-                };
+                return Result<bool>.Failure($"{product.Name} is  out of stock  ");
+               
             }
             var existingCartItem = await _unitOfWork.CartItem.GetCartItem(userId, productId);
             int result;
@@ -82,41 +77,27 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             if (result <= 0)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "Uable to Add to Cart !"
-                };
+                return Result<bool>.Failure("Uable to Add to Cart !");
+              
             }
-            return new Result
-            {
-                Success = true,
-                Message = "Add To Cart Successfully ! "
-            };
+            return Result < bool>.Success(true);
+           
 
         }
 
 
-        public async Task<Result> RemoveItem(Guid cartItemId)
+        public async Task<Result<bool>> RemoveItem(Guid cartItemId)
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "User not exist"
-                };
-
+                return Result<bool>.Failure("User not found");
+               
             }
             var cartItem = await _unitOfWork.CartItem.GetByIdAsync(cartItemId);
             if (cartItem == null)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "Cart Item is not found !"
-                };
+                return Result<bool>.Failure("Cart items not found");
 
 
             }
@@ -126,53 +107,49 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             if (result <= 0)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "Uable to Remove  !"
-                };
+                return Result<bool>.Failure("Unable to Remove");
             }
-            return new Result
-            {
-                Success = true,
-                Message = "Remove Successfully ! "
-            };
+
+            return Result<bool>.Success(true);
 
 
         }
 
-        public async Task<Result> UpdateItem(Guid cartItemId , int change)
+        public async Task<Result<bool>> UpdateItem(Guid cartItemId , int change)
         {
             var item = await _unitOfWork.CartItem.GetByIdAsync(cartItemId);
             if(item == null)
             {
-                  return new Result
-                {
-                    Success = false,
-                    Message = "Cart Item is not found !"
-                };
+                  return Result<bool>.Failure("Cart item not found");
             }
            var newQuantity=  item.Quantity + change;
 
             if (newQuantity == 0)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "Quantity cannot be less than 0 !"
-                };
+                return Result<bool>.Failure("Quantity cannot be less than 0 !");
             }
         
             item.Quantity = newQuantity;
             var result=  await _unitOfWork.SaveChangesAsync();
 
-            return new Result
-            {
-                Success = result > 0,
-                Message = item.Quantity.ToString()
-            };
-                
+            return Result<bool>.Success(true);
 
+
+        }
+        public async Task<Result<int>> GetCartItemCount()
+        {
+            var userId = _httpContextAccessor.HttpContext?
+                .User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Result<int>.Failure("User not logged in.");
+            }
+
+            var count = await _unitOfWork.CartItem
+                .GetCartItemCountAsync(userId);
+
+            return Result<int>.Success(count);
         }
     }
 }

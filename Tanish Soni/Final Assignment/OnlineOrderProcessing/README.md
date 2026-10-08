@@ -16,7 +16,6 @@ An ASP.NET Core MVC based Online Order Processing and Inventory Management Syste
      
 # 1. Tools Used
 
-## Backend
 
 - ASP.NET Core MVC
 - .NET 10
@@ -25,14 +24,6 @@ An ASP.NET Core MVC based Online Order Processing and Inventory Management Syste
 - SQL Server
 - ASP.NET Core Identity
 
-## Frontend
-
-- Razor Views
-- HTML
-- CSS
-- JavaScript
-- jQuery
-- Bootstrap
 
 ## Authentication
 
@@ -147,7 +138,7 @@ All order status transition rules are written in OrderWorkflowService.
 
 # 5. Demo Payment
 
-A random number generate using thing handle demo payment
+A random number generate using this  handle demo payment
 
 - Success -  60%
 - Failure -  30%
@@ -156,7 +147,7 @@ A random number generate using thing handle demo payment
 Every payment attempt is stored in the database.
 
 
-A maximum of 3 payment attempts is allowed.
+A maximum of 3 payment attempts is allowed after it the Order is automatically Cancelled and Stock Readded.
 
 ---
 
@@ -197,6 +188,7 @@ public class Product
 OnlineOrderProcessing/
 |-Readme.md
 |-ConcurrencyDemo
+   |-Program.cs
 |_OnlineOrderProcessing/
    ├── Controllers/
    ├── Data/

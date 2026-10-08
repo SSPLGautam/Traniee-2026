@@ -6,5 +6,10 @@
 
         public List<OnlineOrderProcessing.Enums.OrderStatus> OrderStatuses { get; set; }
             = new();
+        public int CurrentPage { get; set; }
+
+        public int PageSize { get; set; }
+
+        public int TotalPages { get; set; }
     }
 }

@@ -16,12 +16,12 @@ namespace OnlineOrderProcessing.Controllers
         [HttpGet]
         public async  Task<IActionResult> Index(string? Search,int page=1)
         {
-            var model = await _productService.GetAllProducts(
+            var result = await _productService.GetAllProducts(
                 Search,
                 page,
                 5);
 
-            return View(model);
+            return View(result.Value);
         }
 
         [Authorize(Roles = "Admin")]
@@ -30,12 +30,12 @@ namespace OnlineOrderProcessing.Controllers
     string? Search,
     int page = 1)
         {
-            var model = await _productService.GetAllProducts(
+            var result= await _productService.GetAllProducts(
                 Search,
                 page,
                 5);
 
-            return View(model);
+            return View(result.Value);
         }
 
         [Authorize(Roles = "Admin")]
@@ -56,19 +56,30 @@ namespace OnlineOrderProcessing.Controllers
 
             var result = await _productService.CreateProduct(Model);
 
-            if(!result){
-                ModelState.AddModelError("", "Unable to Create Product !");
+            if(result.IsFailure){
+                ModelState.AddModelError("", result.ErrorMessage);
                 return View(Model);
             }
 
             return RedirectToAction("Index");
         }
+        [HttpGet]
+        public async Task<IActionResult> Search(
+     string? search,
+     int page = 1)
+        {
+            var model = await _productService.GetAllProducts(
+                search,
+                page
+            );
 
+            return PartialView("_ProductList", model.Value);
+        }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid Id)
         {
             var model = await _productService.GetProductForEditById(Id);
-            return  View(model);
+            return  View(model.Value);
         }
         [Authorize(Roles = "Admin")]
         [HttpPost]
@@ -81,9 +92,9 @@ namespace OnlineOrderProcessing.Controllers
                 return View(Model);
             }
             var result = await  _productService.EditProduct(Model);
-            if (!result) 
+            if (result.IsFailure) 
             {
-                ModelState.AddModelError("", "Unable to Edit Product !");
+                ModelState.AddModelError("", result.ErrorMessage);
                 return View(Model);
             }
 
@@ -95,12 +106,12 @@ namespace OnlineOrderProcessing.Controllers
         {
            var result =  await _productService.DeleteProduct(Id);
 
-            if(!result)
+            if(result.IsFailure)
             {
                 return Json(new
                 {
                     success = false,
-                    message = "Product deleted Unsuccessfully"
+                    message = result.ErrorMessage
                 });
             }
             return Json(new
