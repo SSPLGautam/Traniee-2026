@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineOrderProcessing.Enums;
 using OnlineOrderProcessing.Services;
@@ -20,21 +21,34 @@ namespace OnlineOrderProcessing.Controllers
         public async Task<IActionResult> Index()
 
         {
-            var model =await _orderService.GetOrders();
-            if (model==null)
+            var result =await _orderService.GetOrders();
+            if (result.Value==null)
             {
                 return NotFound();
             }
-            return View(model);
+            return View(result.Value);
         }
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> AOrders()
+        public async Task<IActionResult> AdminOrders(int page=1)
 
         {
-            var model = await _orderService.GetAllOrders();
-           
-            return View(model);
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            const int pageSize = 3;
+
+            var result = await _orderService.GetAllOrders(page, pageSize);
+
+            if (result.IsFailure)
+            {
+                TempData["Message"] = result.ErrorMessage;
+                return View(new AdminOrdersViewModel());
+            }
+
+            return View(result.Value);
         }
 
         [Authorize(Roles = "Admin")]
@@ -44,7 +58,7 @@ namespace OnlineOrderProcessing.Controllers
         {
             var model = await _orderService.GetAllFailedOrders();
 
-            return View(model);
+            return View(model.Value);
         }
 
 
@@ -54,7 +68,7 @@ namespace OnlineOrderProcessing.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new Result
+                return BadRequest(new 
                 {
                     Success = false,
                     Message = "Invalid order request."
@@ -63,6 +77,7 @@ namespace OnlineOrderProcessing.Controllers
 
             }
             var result = await _orderService.Create(Model);
+
             return Json(result);
 
         }
@@ -77,8 +92,11 @@ namespace OnlineOrderProcessing.Controllers
             var result = await _orderService.UpdateOrderStatus(
                 orderId,
                 status);
-            TempData["Message"] = result.Message;
-            return RedirectToAction("AOrders");
+            if (result.IsFailure)
+            {
+                TempData["Message"] = result.ErrorMessage;
+            }
+            return RedirectToAction("AdminOrders");
         }
 
 

@@ -1,28 +1,46 @@
-﻿
-$(document).on("click", "#pay-btn", function () {
-    var orderId = $(this).data("id");
-    console.log(orderId,"ddddddddddddddddddd");
+﻿function Pay(orderId) {
+
     $.ajax({
-        url: "/payment/pay",
+        url: "/Payment/Pay",
         type: "POST",
-       
+
         data: {
-            OrderId: orderId
+            orderId: orderId
         },
+
         success: function (response) {
+
+            console.log(response);
 
             if (response.success) {
 
                 alert(response.message);
 
-                window.location.href = "/orders";   
-
+                window.location.href = "/Orders";
             }
-            alert(response.message);
+            else {
 
+                alert(response.message);
+            }
         },
-        error: function () {
-            alert("Something went wrong.");
+
+        error: function (xhr) {
+
+            console.log(xhr.responseText);
+
+            alert("Something went wrong while processing payment.");
         }
-    })
-})
+    });
+}
+
+
+$(document).ready(function () {
+
+    $(document).on("click", "#pay-btn", function () {
+
+        const orderId = $(this).data("id");
+
+        Pay(orderId);
+    });
+
+});

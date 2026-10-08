@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OnlineOrderProcessing.Common;
 using OnlineOrderProcessing.Enums;
 using OnlineOrderProcessing.Models;
 using OnlineOrderProcessing.Repositories;
@@ -19,11 +20,17 @@ namespace OnlineOrderProcessing.Services.Implementations
             _httpContextAccessor = httpContextAccessor;
             _orderWorkflowService = orderWorkflowService;
         }
+            
 
-
-        public async Task<CreateOrderResponseViewModel> Create(CreateOrderViewModel model)
+        public async Task<Result<CreateOrderResponseViewModel>> Create(CreateOrderViewModel model)
         {
-            var userId = "28b11383-bf4e-4132-8c7c-a851a3cf8a35"; // TODO: real user
+            var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //var userId = "b81d3510-5179-4515-ad03-941bd8c88224"; use this when you start your concurrency demo project
+            if (userId == null)
+            {
+                return Result<CreateOrderResponseViewModel>.Failure("User not Found");
+
+            }
 
             if (model.Items == null || !model.Items.Any() || model.Items.Any(i => i.Quantity <= 0))
                 return Fail("Invalid order items.");
@@ -97,13 +104,11 @@ namespace OnlineOrderProcessing.Services.Implementations
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
-                return new CreateOrderResponseViewModel
+                return  Result<CreateOrderResponseViewModel>.Success( new CreateOrderResponseViewModel
                 {
-                    Success = true,
-                    Message = "Order Created Successfully !!",
                     OrderId = order.Id,
                     Status = order.Status
-                };
+                });
             }
             catch (DbUpdateException)  
             {
@@ -119,13 +124,14 @@ namespace OnlineOrderProcessing.Services.Implementations
             }
         }
 
-        private static CreateOrderResponseViewModel Fail(string message) =>
-            new() { Success = false, Message = message };
+        private static Result<CreateOrderResponseViewModel> Fail(string message) =>
+            Result<CreateOrderResponseViewModel>.Failure(message);
 
-        private static CreateOrderResponseViewModel Existing(Order o) =>
-            new() { Success = true, Message = "Order already exists", OrderId = o.Id, Status = o.Status };
+        private static Result<CreateOrderResponseViewModel> Existing(Order o) =>
+            Result<CreateOrderResponseViewModel>.Success(new CreateOrderResponseViewModel { OrderId = o.Id,Status=o.Status });
 
-        public async Task<OrderListViewModel> GetOrders()
+
+        public async Task<Result<OrderListViewModel>> GetOrders()
         {
 
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -142,47 +148,59 @@ namespace OnlineOrderProcessing.Services.Implementations
                 TotalItems = o.OrderItems.Count()
             }).ToList();
 
-            return new OrderListViewModel { Orders = ordersVM };
+            return Result<OrderListViewModel>.Success( new OrderListViewModel { Orders = ordersVM });
 
 
         }
 
-        public async Task<AdminOrdersViewModel> GetAllOrders()
+        public async Task<Result<AdminOrdersViewModel>> GetAllOrders(
+         int page = 1,
+         int pageSize = 10)
         {
+            var totalOrders = await _unitOfWork.Order.GetOrdersCount();
 
-            var adminOrders = await _unitOfWork.Order.GetAllOrders();
+            var totalPages = (int)Math.Ceiling(
+                totalOrders / (double)pageSize
+            );
 
+            var adminOrders = await _unitOfWork.Order.GetAllOrders(
+                page,
+                pageSize
+            );
 
             var orders = adminOrders.Select(o => new AdminOrderViewModel
             {
-
                 OrderId = o.Id,
                 Status = o.Status,
                 CreatedAt = o.CreatedAt,
                 TotalAmount = o.TotalAmount,
+
                 PaymentAttempts = o.Payments
-                                  .OrderByDescending(p => p.Attempt)
-                                  .Select(p => p.Attempt)
-            .FirstOrDefault(),
+                    .OrderByDescending(p => p.Attempt)
+                    .Select(p => p.Attempt)
+                    .FirstOrDefault(),
+
                 CustomerEmail = o.User.Email,
                 CustomerName = o.User.UserName,
                 Items = o.OrderItems.ToList()
+            }).ToList();
 
+            return Result<AdminOrdersViewModel>.Success(
+                new AdminOrdersViewModel
+                {
+                    Orders = orders,
 
+                    OrderStatuses = Enum
+                        .GetValues<OrderStatus>()
+                        .ToList(),
 
-            });
-
-            return new AdminOrdersViewModel
-            {
-                Orders = orders.ToList(),
-
-                OrderStatuses = Enum
-              .GetValues<OnlineOrderProcessing.Enums.OrderStatus>()
-              .ToList()
-            };
+                    CurrentPage = page,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                }
+            );
         }
-
-        public async Task<AdminOrdersViewModel> GetAllFailedOrders()
+        public async Task<Result<AdminOrdersViewModel>> GetAllFailedOrders()
         {
 
             var adminOrders = await _unitOfWork.Order.GetAllFailedOrders();
@@ -207,19 +225,19 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             });
 
-            return new AdminOrdersViewModel
+            return Result<AdminOrdersViewModel>.Success( new AdminOrdersViewModel
             {
                 Orders = orders.ToList(),
 
                 OrderStatuses = Enum
               .GetValues<OnlineOrderProcessing.Enums.OrderStatus>()
               .ToList()
-            };
+            });
         }
 
 
 
-        public async Task<Result> UpdateOrderStatus(
+        public async Task<Result<bool>> UpdateOrderStatus(
     Guid orderId,
     OrderStatus newStatus)
         {
@@ -227,19 +245,11 @@ namespace OnlineOrderProcessing.Services.Implementations
 
             if (order == null)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "Order not found"
-                };
+                return Result<bool>.Failure("Order not found");
             }
             if (!_orderWorkflowService.CanChange(order.Status, newStatus))
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = $"Cannot change {order.Status} to {newStatus}"
-                };
+                return Result<bool>.Failure($"Cannot change {order.Status} to {newStatus}");
             }
 
             using var transaction = await _unitOfWork.BeginTransactionAsync();
@@ -296,21 +306,13 @@ namespace OnlineOrderProcessing.Services.Implementations
 
                 await transaction.CommitAsync();
 
-                return new Result
-                {
-                    Success = true,
-                    Message = $"Order status changed to {newStatus}."
-                };
+                return Result<bool>.Success(true);
             }
             catch
             {
                 await transaction.RollbackAsync();
 
-                return new Result
-                {
-                    Success = false,
-                    Message = "Failed to update order status."
-                };
+                return Result<bool>.Failure("Failed to update order status.");
             }
         }
 

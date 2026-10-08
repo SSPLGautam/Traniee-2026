@@ -1,4 +1,5 @@
-﻿using OnlineOrderProcessing.Enums;
+﻿using OnlineOrderProcessing.Common;
+using OnlineOrderProcessing.Enums;
 using OnlineOrderProcessing.Repositories;
 using OnlineOrderProcessing.ViewModels;
 
@@ -13,17 +14,17 @@ namespace OnlineOrderProcessing.Services.Implementations
             _reportRepository = reportRepository;
         }
 
-        public async Task<SalesReportViewModel> GetSalesReport(
+        public async Task<Result< SalesReportViewModel>> GetSalesReport(
             DateTime? fromDate,
             DateTime? toDate,
             Guid? productId,
             OrderStatus? status)
         {
-            return await _reportRepository.GetSalesReport(
+            return Result<SalesReportViewModel>.Success( await _reportRepository.GetSalesReport(
                 fromDate,
                 toDate,
                 productId,
-                status);
+                status));
         }
     }
 }

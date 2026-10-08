@@ -31,16 +31,21 @@ namespace OnlineOrderProcessing.Repositories.Implementations
             return await _context.Orders.Include(o => o.OrderItems).
                 ThenInclude(o => o.Product).FirstOrDefaultAsync(o => o.Id == OrderId);
         }
-
-        public async Task<List<Order>> GetAllOrders()
+        public async Task<int> GetOrdersCount()
+        {
+            return await _context.Orders.CountAsync();
+        }
+        public async Task<List<Order>> GetAllOrders(int page, int pageSize)
         {
             return await _context.Orders
-                .Include(o => o.User)
-                .Include(o=>o.Payments)
-                .Include(o => o.OrderItems)
-                .ThenInclude(o => o.Product)
-                .OrderByDescending(o=>o.CreatedAt)
-                .ToListAsync();
+        .Include(o => o.User)
+        .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Product)
+        .Include(o => o.Payments)
+        .OrderByDescending(o => o.CreatedAt)
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .ToListAsync();
         }
         public async Task<List<Order>> GetAllFailedOrders()
         {

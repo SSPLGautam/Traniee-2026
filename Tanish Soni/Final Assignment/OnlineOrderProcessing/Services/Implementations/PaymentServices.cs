@@ -1,4 +1,5 @@
-﻿using OnlineOrderProcessing.Enums;
+﻿using OnlineOrderProcessing.Common;
+using OnlineOrderProcessing.Enums;
 using OnlineOrderProcessing.Models;
 using OnlineOrderProcessing.Repositories;
 using OnlineOrderProcessing.ViewModels;
@@ -14,43 +15,35 @@ namespace OnlineOrderProcessing.Services.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PaymentPageViewModel> GetPaymentPage(Guid OrderId)
+        public async Task<Result< PaymentPageViewModel>> GetPaymentPage(Guid OrderId)
         {
             var order = await _unitOfWork.Order.GetOrderById(OrderId);
            if(order== null)
             {
                 return null;
             }
-            return new PaymentPageViewModel
+            return Result<PaymentPageViewModel>.Success( new PaymentPageViewModel
             {
                 OrderId = order.Id,
                 Items = order.OrderItems.ToList(),
                 TotalAmmount = order.TotalAmount
 
 
-            };
+            });
             
         }
 
-        public async Task<Result> Pay (Guid OrderId)
+        public async Task<Result<bool>> Pay (Guid OrderId)
         {
             var order = await _unitOfWork.Order.GetOrderById(OrderId);
             if (order.Status != OrderStatus.Pending)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "This order cannot be paid."
-                };
+                return Result<bool>.Failure("This order cannot be paid.");
             }
 
             if (order == null)
             {
-                return new Result
-                {
-                    Success =false,
-                    Message="User not found"
-                };
+                return Result<bool>.Failure("User not found");
 
 
             }
@@ -60,11 +53,7 @@ namespace OnlineOrderProcessing.Services.Implementations
             var attempt = lastPayment == null ? 1 : lastPayment.Attempt + 1;
             if (lastPayment?.Attempt > 3)
             {
-                return new Result
-                {
-                    Success = false,
-                    Message = "Payment Attempt is completed , Please make a new Order"
-                };
+                return Result<bool>.Failure("Payment Attempt is completed , Please make a new Order");
             }
 
 
@@ -114,11 +103,7 @@ namespace OnlineOrderProcessing.Services.Implementations
                     await _unitOfWork.SaveChangesAsync();
                     await _unitOfWork.CommitTransactionAsync();
 
-                    return new Result
-                    {
-                        Success = true,
-                        Message = "Payment Successfully"
-                    };
+                    return Result<bool>.Success(true);
                 }
 
                 var failedEvent = new OrderEvent
@@ -173,13 +158,7 @@ namespace OnlineOrderProcessing.Services.Implementations
                     await _unitOfWork.CommitTransactionAsync();
 
 
-                    return new Result
-                    {
-                        Success = false,
-
-                        Message =
-                            "Payment failed 3 times. Order has been cancelled."
-                    };
+                    return Result<bool>.Failure("Payment failed 3 times. Order has been cancelled.");
 
 
                 }
@@ -189,22 +168,12 @@ namespace OnlineOrderProcessing.Services.Implementations
                 await _unitOfWork.CommitTransactionAsync();
 
 
-                return new Result
-                {
-                    Success = false,
-
-                    Message = "Payment Failed"
-                };
+                return Result<bool>.Failure("Payment Failed");
 
             }
             catch (Exception ex) {
                 await _unitOfWork.RollbackTransactionAsync();
-                return new Result
-                {
-                    Success = false,
-
-                    Message ="Unexpected error"
-                };
+                return Result<bool>.Failure("Unexpected error");
 
             }
 

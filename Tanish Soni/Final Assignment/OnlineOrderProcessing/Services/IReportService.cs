@@ -1,11 +1,12 @@
-﻿using OnlineOrderProcessing.Enums;
+﻿using OnlineOrderProcessing.Common;
+using OnlineOrderProcessing.Enums;
 using OnlineOrderProcessing.ViewModels;
 
 namespace OnlineOrderProcessing.Services
 {
     public interface IReportService
     {
-        Task<SalesReportViewModel> GetSalesReport(
+        Task<Result< SalesReportViewModel>> GetSalesReport(
        DateTime? fromDate,
        DateTime? toDate,
        Guid? productId,

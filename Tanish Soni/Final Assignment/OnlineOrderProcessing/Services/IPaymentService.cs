@@ -1,10 +1,11 @@
-﻿using OnlineOrderProcessing.ViewModels;
+﻿using OnlineOrderProcessing.Common;
+using OnlineOrderProcessing.ViewModels;
 
 namespace OnlineOrderProcessing.Services
 {
     public interface IPaymentService
     {
-        Task<PaymentPageViewModel> GetPaymentPage(Guid OrderId);
-        Task<Result> Pay(Guid OrderId);
+        Task<Result< PaymentPageViewModel>> GetPaymentPage(Guid OrderId);
+        Task<Result<bool>> Pay(Guid OrderId);
     }
 }

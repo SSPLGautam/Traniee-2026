@@ -47,22 +47,6 @@ namespace OnlineOrderProcessing.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "BADC4D63-A4FB-438A-B29F-8B6421AD6D8D",
-                            ConcurrencyStamp = "BADC4D63-A4FB-438A-B29F-8B6421AD6D8D",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "WQDC4D63-A4FB-438A-B29F-8B6421AD6D8D",
-                            ConcurrencyStamp = "1FFCE66A-E440-43CE-A0CC-A4B75E238A01",
-                            Name = "Customer",
-                            NormalizedName = "CUSTOMER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -259,7 +243,7 @@ namespace OnlineOrderProcessing.Migrations
                     b.HasIndex("UserId", "ProductId")
                         .IsUnique();
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("OnlineOrderProcessing.Models.Order", b =>
@@ -294,7 +278,7 @@ namespace OnlineOrderProcessing.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("OnlineOrderProcessing.Models.OrderEvent", b =>
@@ -319,7 +303,7 @@ namespace OnlineOrderProcessing.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderEvents");
+                    b.ToTable("OrderEvents", (string)null);
                 });
 
             modelBuilder.Entity("OnlineOrderProcessing.Models.OrderItems", b =>
@@ -347,7 +331,7 @@ namespace OnlineOrderProcessing.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("OnlineOrderProcessing.Models.Payment", b =>
@@ -375,7 +359,7 @@ namespace OnlineOrderProcessing.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("OnlineOrderProcessing.Models.Product", b =>
@@ -411,7 +395,7 @@ namespace OnlineOrderProcessing.Migrations
                     b.HasIndex("SKU")
                         .IsUnique();
 
-                    b.ToTable("Products", t =>
+                    b.ToTable("Products", null, t =>
                         {
                             t.HasCheckConstraint("CK_Products_Stock_NonNegative", "[Stock] >= 0");
                         });

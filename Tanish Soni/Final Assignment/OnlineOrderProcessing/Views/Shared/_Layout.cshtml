@@ -1,8 +1,16 @@
-﻿@{
+﻿@using OnlineOrderProcessing.Services
+@inject ICartService CartService
+
+@{
 
     bool isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
     bool isAdmin = User?.IsInRole("Admin") ?? false;
     bool isManager = User?.IsInRole("Manager") ?? false;
+    var cartResult = await CartService.GetCartItemCount();
+
+    var cartCount = cartResult.IsSuccess
+        ? cartResult.Value
+        : 0;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -39,7 +47,7 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Adminproducts">Admin Products</a>
                                 </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="AOrders">Admin Orders</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="AdminOrders">Admin Orders</a>
                                     </li>
                                      <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="FailedOrders">Failed Orders</a>
@@ -57,8 +65,33 @@
                         @if (isAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart preview-icon"><path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18" /><path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25" /><circle cx="18" cy="20" r="2" /><circle cx="8" cy="20" r="2" /></svg>
+                                <a class="nav-link text-dark cart-link"
+                                   asp-area=""
+                                   asp-controller="Cart"
+                                   asp-action="Index">
+
+                                    <span class="cart-icon-container">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             width="24"
+                                             height="24"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="2"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round">
+
+                                            <path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18" />
+                                            <path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25" />
+                                            <circle cx="18" cy="20" r="2" />
+                                            <circle cx="8" cy="20" r="2" />
+                                        </svg>
+
+                                       
+                                            <span id="cart-count" class="cart-badge">@cartCount</span>
+                                        
+                                    </span>
+
                                 </a>
                             </li>
                             <li class="nav-item">
